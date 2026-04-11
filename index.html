@@ -132,7 +132,7 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
         <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.92);letter-spacing:-.02em;">Nigeria Deal Intelligence</div>
         <div class="nh-badge"><div class="nh-dot"></div>Live</div>
       </div>
-      <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:3px;">NNPC Project Jewels &middot; FMWR Dams Compendium &middot; 244 Assets &middot; Proprietary</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:3px;">NNPC Project Jewels &middot; FMWR Dams Compendium &middot; 251 Assets &middot; Proprietary</div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
@@ -147,7 +147,7 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
     </div>
     <div style="width:.5px;height:32px;background:rgba(255,255,255,.07);"></div>
     <div class="stat-btn" id="btn-water" onclick="openBrowser('water')">
-      <div style="font-size:18px;font-weight:600;color:rgba(0,212,255,.82);line-height:1.1;">125</div>
+      <div style="font-size:18px;font-weight:600;color:rgba(0,212,255,.82);line-height:1.1;">124</div>
       <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.28);margin-top:2px;">Dams &#8595;</div>
     </div>
     <div style="width:.5px;height:32px;background:rgba(255,255,255,.07);"></div>
@@ -156,7 +156,6 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
       <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.28);margin-top:2px;">Oil &amp; Gas &#8595;</div>
     </div>
   </div>
-</div>
 </div>
 </div>
 <div id="ab" class="glass">
@@ -212,7 +211,7 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
   <div class="filter-panel glass" id="dam-filter" style="padding:12px 14px;min-width:185px;">
     <div class="panel-label" style="color:rgba(0,212,255,.7);">Dam Filter</div>
     <div class="src-note">Source: FMWR Compendium of Dams 2023</div>
-    <div class="fpill-item dam-on" id="df-all" onclick="setDamFilter('all')">All Dams <span class="fc">125</span></div>
+    <div class="fpill-item dam-on" id="df-all" onclick="setDamFilter('all')">All Dams <span class="fc">124</span></div>
     <div class="fpill-item" id="df-priority" onclick="setDamFilter('priority')">&#9733; Priority <span class="fc">30</span></div>
     <div class="fpill-item" id="df-hydro" onclick="setDamFilter('hydro')">&#9889; Hydro Only <span class="fc" id="dc-h">&#8212;</span></div>
     <div class="fpill-item" id="df-large" onclick="setDamFilter('large')">&#9671; Large Only <span class="fc" id="dc-l">&#8212;</span></div>
@@ -865,7 +864,6 @@ function openBrowser(filter){
   var s=document.getElementById('ab-search');
   if(s) s.value='';
   renderABList();
-  document.getElementById('fdropdown').classList.remove('open');
 }
 function closeBrowser(){
   document.getElementById('ab').classList.remove('open');
@@ -934,21 +932,7 @@ function togOv(k){
 }
 
 
-function togMineralFilter(e){
-  e.stopPropagation();
-  closeBrowser();
-  var d=document.getElementById('fdropdown'),c=document.getElementById('fchev'),btn=document.getElementById('fbtn');
-  var open=d.classList.toggle('open');
-  c.style.transform=open?'rotate(180deg)':'';
-  btn.classList.toggle('active',open);
-}
 document.addEventListener('click',function(e){
-  var d=document.getElementById('fdropdown'),btn=document.getElementById('fbtn');
-  if(d&&btn&&!d.contains(e.target)&&!btn.contains(e.target)){
-    d.classList.remove('open');
-    var c=document.getElementById('fchev');if(c)c.style.transform='';
-    btn.classList.remove('active');
-  }
   var ab=document.getElementById('ab');
   var statBtns=['btn-all','btn-minerals','btn-water','btn-energy'];
   if(ab&&!ab.contains(e.target)&&statBtns.every(function(id){var el=document.getElementById(id);return!el||!el.contains(e.target);}))
