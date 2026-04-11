@@ -12,78 +12,136 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 #ngm{width:100%;height:100%;}
 @keyframes mPulse{0%{opacity:.55;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.8)}}
 @keyframes dropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-.leaflet-popup-content-wrapper{background:rgba(18,18,22,.96)!important;backdrop-filter:blur(28px)!important;-webkit-backdrop-filter:blur(28px)!important;border:.5px solid rgba(255,255,255,.1)!important;border-radius:16px!important;box-shadow:0 24px 64px rgba(0,0,0,.6)!important;color:rgba(255,255,255,.85)!important;}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes slideOut{from{transform:translateX(0)}to{transform:translateX(100%)}}
+
+/* Leaflet overrides */
+.leaflet-popup-content-wrapper{background:rgba(18,18,22,.97)!important;border:.5px solid rgba(255,255,255,.08)!important;border-radius:14px!important;box-shadow:0 20px 50px rgba(0,0,0,.5)!important;color:rgba(255,255,255,.85)!important;}
 .leaflet-popup-tip-container{display:none!important;}
 .leaflet-popup-content{margin:16px 18px 14px!important;width:310px!important;}
 .leaflet-popup-close-button{color:rgba(255,255,255,.3)!important;font-size:18px!important;top:10px!important;right:12px!important;}
 .leaflet-popup-close-button:hover{color:rgba(255,255,255,.7)!important;}
 .leaflet-control-zoom{border:none!important;box-shadow:none!important;margin-right:14px!important;margin-top:72px!important;}
-.leaflet-control-zoom a{background:rgba(18,18,22,.88)!important;backdrop-filter:blur(20px)!important;color:rgba(255,255,255,.7)!important;border:.5px solid rgba(255,255,255,.1)!important;border-radius:10px!important;width:34px!important;height:34px!important;line-height:34px!important;font-size:19px!important;display:block!important;margin-bottom:5px!important;}
+.leaflet-control-zoom a{background:rgba(18,18,22,.92)!important;color:rgba(255,255,255,.7)!important;border:.5px solid rgba(255,255,255,.08)!important;border-radius:10px!important;width:34px!important;height:34px!important;line-height:34px!important;font-size:19px!important;display:block!important;margin-bottom:5px!important;}
 .leaflet-control-zoom a:hover{background:rgba(255,255,255,.12)!important;color:#fff!important;}
 .leaflet-control-attribution{background:rgba(0,0,0,.45)!important;color:rgba(255,255,255,.2)!important;font-size:9px!important;border-radius:6px 0 0 0!important;padding:3px 8px!important;}
-.glass{background:rgba(18,18,22,.88);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:.5px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.3);}
+
+/* Panel base (replaces .glass) */
+.panel{background:rgba(18,18,22,.94);border:.5px solid rgba(255,255,255,.08);border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,.25);}
+.glass{background:rgba(18,18,22,.94);border:.5px solid rgba(255,255,255,.08);border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,.25);}
+
+/* Popup content styles */
 .pc{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;opacity:.65;}
 .pt-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
-.pt-name{font-size:15px;font-weight:600;color:#fff;line-height:1.3;flex:1;}
-.pt-arr{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(255,255,255,.4);cursor:pointer;user-select:none;}
+.pt-name{font-size:16.5px;font-weight:600;color:#fff;line-height:1.3;flex:1;}
+.pt-arr{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(255,255,255,.4);cursor:pointer;user-select:none;}
 .expandable{cursor:pointer;}
 .expandable:hover .pt-name{color:#fff;}
 .expandable:hover .pt-arr{background:rgba(255,255,255,.13);color:rgba(255,255,255,.7);}
 .pt-arr.open{background:rgba(10,132,255,.16);border-color:rgba(10,132,255,.4);color:rgba(100,180,255,.9);}
-.pd{font-size:12.5px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:10px;}
-.pi{background:rgba(52,211,153,.08);border-left:2px solid rgba(52,211,153,.4);padding:7px 10px;border-radius:0 8px 8px 0;font-size:12px;color:rgba(100,220,160,.9);line-height:1.55;margin-bottom:4px;}
-.pw{background:rgba(0,212,255,.07);border-left:2px solid rgba(0,212,255,.3);padding:7px 10px;border-radius:0 8px 8px 0;font-size:12px;color:rgba(100,220,255,.9);line-height:1.55;margin-bottom:4px;}
-.pp{background:rgba(255,195,0,.07);border-left:2px solid rgba(255,195,0,.4);padding:7px 10px;border-radius:0 8px 8px 0;font-size:12px;color:rgba(255,210,70,.9);line-height:1.55;margin-bottom:4px;}
+.pd{font-size:13.5px;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:10px;}
+.pi{background:rgba(52,211,153,.08);border-left:2px solid rgba(52,211,153,.4);padding:7px 10px;border-radius:0 8px 8px 0;font-size:13px;color:rgba(100,220,160,.9);line-height:1.55;margin-bottom:4px;}
+.pw{background:rgba(0,212,255,.07);border-left:2px solid rgba(0,212,255,.3);padding:7px 10px;border-radius:0 8px 8px 0;font-size:13px;color:rgba(100,220,255,.9);line-height:1.55;margin-bottom:4px;}
+.pp{background:rgba(255,195,0,.07);border-left:2px solid rgba(255,195,0,.4);padding:7px 10px;border-radius:0 8px 8px 0;font-size:13px;color:rgba(255,210,70,.9);line-height:1.55;margin-bottom:4px;}
 .pcoord{font-size:10px;font-family:'SF Mono',monospace;color:rgba(255,255,255,.18);margin-top:8px;}
 .pxsec{display:none;border-top:.5px solid rgba(255,255,255,.07);padding-top:12px;margin-top:10px;max-height:340px;overflow-y:auto;}
 .pxsec::-webkit-scrollbar{width:3px;}
 .pxsec::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px;}
 .psgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px;}
 .ps{background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.07);border-radius:10px;padding:8px 10px;}
-.ps-v{font-size:15px;font-weight:600;line-height:1.15;margin-bottom:3px;}
+.ps-v{font-size:16.5px;font-weight:600;line-height:1.15;margin-bottom:3px;}
 .ps-l{font-size:9px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.06em;}
 .px-label{font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.25);margin:10px 0 5px;}
-.px-body{font-size:12px;color:rgba(255,255,255,.52);line-height:1.7;}
-.px-thesis{background:rgba(10,132,255,.07);border-left:2px solid rgba(10,132,255,.3);padding:7px 10px;border-radius:0 8px 8px 0;font-size:12px;color:rgba(120,190,255,.9);line-height:1.6;margin:5px 0;}
+.px-body{font-size:13px;color:rgba(255,255,255,.52);line-height:1.7;}
+.px-thesis{background:rgba(10,132,255,.07);border-left:2px solid rgba(10,132,255,.3);padding:7px 10px;border-radius:0 8px 8px 0;font-size:13px;color:rgba(120,190,255,.9);line-height:1.6;margin:5px 0;}
 .px-risks{list-style:none;}
-.px-risks li{font-size:11.5px;color:rgba(255,110,110,.75);padding:3px 0 3px 14px;position:relative;line-height:1.5;}
+.px-risks li{font-size:12.5px;color:rgba(255,110,110,.75);padding:3px 0 3px 14px;position:relative;line-height:1.5;}
 .px-risks li::before{content:'\25B8';position:absolute;left:0;opacity:.5;}
-#header{position:absolute;top:14px;left:14px;right:14px;z-index:1003;}
-#ab{position:absolute;top:82px;left:14px;right:14px;z-index:1002;display:none;max-height:calc(100% - 120px);overflow:hidden;flex-direction:column;animation:dropIn .18s ease both;}
+
+/* Header — slim top bar */
+#header{position:absolute;top:12px;left:12px;right:12px;z-index:1003;}
+#header .hbar{padding:8px 14px;display:flex;align-items:center;gap:12px;}
+#header .hbar .logo-area{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+#header .hbar .logo-area img{height:18px;opacity:.9;}
+#header .hbar .htitle{font-size:14px;font-weight:600;color:rgba(255,255,255,.88);letter-spacing:-.01em;white-space:nowrap;}
+.nh-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(46,125,82,.12);border:.5px solid rgba(46,125,82,.35);border-radius:14px;padding:2px 8px;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(46,125,82,.9);}
+.nh-dot{width:5px;height:5px;border-radius:50%;background:#2E7D52;animation:nhP 2.5s ease-in-out infinite;}
+@keyframes nhP{0%,100%{opacity:1}50%{opacity:.4}}
+.hsearch{flex:1;min-width:0;background:rgba(255,255,255,.05);border:.5px solid rgba(255,255,255,.08);border-radius:10px;padding:7px 12px;color:white;font-size:13px;outline:none;}
+.hsearch::placeholder{color:rgba(255,255,255,.25);}
+.hsearch:focus{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.08);}
+.hbtn{width:34px;height:34px;border-radius:10px;border:.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.hbtn:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);}
+.hbtn.active{background:rgba(10,132,255,.15);border-color:rgba(10,132,255,.3);color:rgba(120,180,255,.9);}
+
+/* Asset browser */
+#ab{position:absolute;top:62px;left:12px;right:12px;z-index:1002;display:none;max-height:calc(100% - 90px);overflow:hidden;flex-direction:column;animation:dropIn .18s ease both;}
 #ab.open{display:flex;}
 #ab-list{overflow-y:auto;flex:1;}
 #ab-list::-webkit-scrollbar{width:3px;}
 #ab-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px;}
-.ab-search{width:100%;background:rgba(255,255,255,.06);border:.5px solid rgba(255,255,255,.1);border-radius:10px;padding:9px 14px;color:white;font-size:13px;outline:none;}
-.ab-search::placeholder{color:rgba(255,255,255,.28);}
-.ab-tab{padding:5px 12px;border-radius:16px;border:.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:rgba(255,255,255,.55);font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .14s;flex-shrink:0;}
-.ab-tab.on{background:rgba(10,132,255,.18);border-color:rgba(10,132,255,.4);color:rgba(255,255,255,.9);}
-.ab-cat{padding:8px 16px 4px;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);display:flex;align-items:center;gap:8px;}
-.ab-cat-line{flex:1;height:.5px;background:rgba(255,255,255,.07);}
+.ab-search{width:100%;background:rgba(255,255,255,.05);border:.5px solid rgba(255,255,255,.08);border-radius:10px;padding:9px 14px;color:white;font-size:14px;outline:none;}
+.ab-search::placeholder{color:rgba(255,255,255,.25);}
+.ab-tab{padding:5px 12px;border-radius:14px;border:.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .14s;flex-shrink:0;}
+.ab-tab.on{background:rgba(10,132,255,.15);border-color:rgba(10,132,255,.35);color:rgba(255,255,255,.9);}
+.ab-cat{padding:8px 16px 4px;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);display:flex;align-items:center;gap:8px;}
+.ab-cat-line{flex:1;height:.5px;background:rgba(255,255,255,.06);}
 .ab-row{display:flex;align-items:center;gap:12px;padding:9px 16px;cursor:pointer;transition:background .12s;border-bottom:.5px solid rgba(255,255,255,.03);}
-.ab-row:hover{background:rgba(255,255,255,.055);}
+.ab-row:hover{background:rgba(255,255,255,.05);}
 .ab-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .ab-info{flex:1;min-width:0;}
-.ab-name{font-size:13px;font-weight:500;color:rgba(255,255,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ab-sub{font-size:11px;color:rgba(255,255,255,.28);margin-top:1px;}
-.ab-type{font-size:10px;padding:2px 7px;border-radius:8px;border:.5px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);flex-shrink:0;}
+.ab-name{font-size:14px;font-weight:500;color:rgba(255,255,255,.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ab-sub{font-size:12px;color:rgba(255,255,255,.28);margin-top:1px;}
+.ab-type{font-size:10px;padding:2px 7px;border-radius:8px;border:.5px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4);flex-shrink:0;}
 .ab-arrow{font-size:14px;color:rgba(255,255,255,.2);}
 .ab-empty{padding:28px;text-align:center;color:rgba(255,255,255,.25);font-size:13px;}
-#layers-panel{position:absolute;bottom:16px;left:14px;z-index:1001;max-width:340px;}
-.cpill{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;border:.5px solid rgba(255,255,255,.1);font-size:11px;font-weight:500;color:rgba(255,255,255,.68);cursor:pointer;transition:all .15s;background:rgba(255,255,255,.05);}
-.cpill.off{opacity:.28;}
-.cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-#filter-panels{position:absolute;bottom:16px;right:14px;z-index:1001;display:flex;align-items:flex-end;gap:8px;}
+
+/* Sidebar */
+#sidebar{position:absolute;top:12px;right:12px;bottom:12px;width:280px;z-index:1004;overflow:hidden;display:none;animation:slideIn .2s ease both;}
+#sidebar.open{display:flex;flex-direction:column;}
+#sidebar.closing{display:flex;flex-direction:column;animation:slideOut .18s ease both;}
+#sidebar .sb-head{padding:12px 14px 10px;border-bottom:.5px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+#sidebar .sb-title{font-size:13px;font-weight:600;color:rgba(255,255,255,.7);letter-spacing:.02em;}
+#sidebar .sb-close{width:28px;height:28px;border-radius:8px;border:none;background:rgba(255,255,255,.05);color:rgba(255,255,255,.4);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+#sidebar .sb-close:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
+#sidebar .sb-body{overflow-y:auto;flex:1;padding:12px 14px;}
+#sidebar .sb-body::-webkit-scrollbar{width:3px;}
+#sidebar .sb-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.sb-section{margin-bottom:16px;}
+.sb-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:8px;}
+.sb-sep{height:.5px;background:rgba(255,255,255,.05);margin:12px 0;}
+#sc{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px;}
+.sc-item{background:rgba(255,255,255,.03);border:.5px solid rgba(255,255,255,.05);border-radius:10px;padding:8px 10px;}
+.sc-label{font-size:9px;color:rgba(255,255,255,.3);margin-bottom:2px;}
+.sc-value{font-size:17px;font-weight:500;}
+
+/* Layer & overlay pills */
+.cpill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:14px;border:.5px solid rgba(255,255,255,.08);font-size:11px;font-weight:500;color:rgba(255,255,255,.65);cursor:pointer;transition:all .15s;background:rgba(255,255,255,.04);}
+.cpill.off{opacity:.25;}
+.cdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+#layers-panel{display:none;}
+#filter-panels{display:none;}
+
+/* Filter items (used inside sidebar) */
 .filter-panel{display:none;}
-.filter-panel.visible{display:block;}
-.fpill-item{display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:20px;border:.5px solid rgba(255,255,255,.12);font-size:11px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;background:rgba(18,18,22,.85);margin-bottom:5px;white-space:nowrap;}
-.fpill-item:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);}
-.fpill-item.dam-on{border-color:rgba(0,212,255,.5);color:rgba(0,212,255,.9);background:rgba(0,212,255,.1);}
-.fpill-item.og-on{border-color:rgba(255,149,0,.5);color:rgba(255,149,0,.9);background:rgba(255,149,0,.1);}
-.fpill-item .fc{font-size:9px;background:rgba(255,255,255,.1);border-radius:8px;padding:1px 6px;margin-left:auto;}
-.panel-label{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:9px;}
-.panel-sep{height:.5px;background:rgba(255,255,255,.06);margin:9px 0;}
-.legend-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:10.5px;color:rgba(255,255,255,.5);}
+.filter-panel.visible{display:block;margin-bottom:12px;}
+.fpill-item{display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:14px;border:.5px solid rgba(255,255,255,.08);font-size:11px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;transition:all .15s;background:transparent;margin-bottom:4px;white-space:nowrap;}
+.fpill-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);}
+.fpill-item.dam-on{border-color:rgba(0,212,255,.4);color:rgba(0,212,255,.85);background:rgba(0,212,255,.08);}
+.fpill-item.og-on{border-color:rgba(255,149,0,.4);color:rgba(255,149,0,.85);background:rgba(255,149,0,.08);}
+.fpill-item .fc{font-size:9px;background:rgba(255,255,255,.08);border-radius:8px;padding:1px 6px;margin-left:auto;}
+.panel-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.panel-sep{height:.5px;background:rgba(255,255,255,.05);margin:8px 0;}
+.legend-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:10px;color:rgba(255,255,255,.45);}
+.min-on{border-color:rgba(212,175,55,.4)!important;color:rgba(212,175,55,.85)!important;background:rgba(212,175,55,.08)!important;}
+.src-note{font-size:9px;color:rgba(255,255,255,.15);font-style:italic;margin-top:4px;padding-top:4px;border-top:.5px solid rgba(255,255,255,.04);}
+
+/* Stat buttons (in sidebar) */
+.stat-btn{cursor:pointer;padding:4px 8px;border-radius:8px;transition:background .14s;text-align:center;}
+.stat-btn:hover{background:rgba(255,255,255,.06);}
+.stat-btn.active{background:rgba(10,132,255,.12);}
+
+/* Misc */
 .fdrop{position:absolute;top:calc(100% + 10px);right:0;width:268px;max-height:460px;overflow-y:auto;display:none;z-index:1200;}
 .fdrop.open{display:block;}
 .fghdr{padding:8px 14px 5px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.32);display:flex;justify-content:space-between;align-items:center;}
@@ -94,68 +152,24 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 .fname{font-size:13px;color:rgba(255,255,255,.72);flex:1;}
 .fcnt-min{font-size:11px;color:rgba(255,255,255,.25);}
 .fsep{height:.5px;background:rgba(255,255,255,.06);margin:3px 0;}
-.stat-btn{cursor:pointer;padding:4px 8px;border-radius:8px;transition:background .14s;text-align:center;}
-.stat-btn:hover{background:rgba(255,255,255,.07);}
-.stat-btn.active{background:rgba(10,132,255,.15);}
-.fpill{display:flex;align-items:center;gap:7px;padding:8px 15px;border-radius:22px;border:.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:rgba(255,255,255,.82);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;}
-.fpill.active{background:rgba(10,132,255,.15);border-color:rgba(10,132,255,.35);}
-#sc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:8px 14px 14px;}
-.sc-item{background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.06);border-radius:12px;padding:10px 14px;}
-.sc-label{font-size:10px;color:rgba(255,255,255,.3);margin-bottom:3px;}
-.sc-value{font-size:20px;font-weight:500;}
-
-.nh-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(46,125,82,.12);border:.5px solid rgba(46,125,82,.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(46,125,82,.9);}
-.nh-dot{width:6px;height:6px;border-radius:50%;background:#2E7D52;animation:nhP 2.5s ease-in-out infinite;}
-@keyframes nhP{0%,100%{opacity:1}50%{opacity:.4}}
+.fpill{display:flex;align-items:center;gap:7px;padding:8px 15px;border-radius:22px;border:.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.8);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;}
+.fpill.active{background:rgba(10,132,255,.12);border-color:rgba(10,132,255,.3);}
 .pf-bar{background:linear-gradient(90deg,rgba(46,125,82,.12),transparent);border-left:2px solid #2E7D52;padding:5px 10px;margin-bottom:8px;border-radius:0 6px 6px 0;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(46,125,82,.85);}
-.pf-thesis{background:rgba(46,125,82,.07);border-left:2px solid rgba(46,125,82,.4);padding:7px 10px;border-radius:0 8px 8px 0;font-size:12px;color:rgba(120,220,160,.9);line-height:1.6;margin:5px 0;}
-.min-on{border-color:rgba(212,175,55,.5)!important;color:rgba(212,175,55,.9)!important;background:rgba(212,175,55,.1)!important;}
-.src-note{font-size:9px;color:rgba(255,255,255,.18);font-style:italic;margin-top:5px;padding-top:4px;border-top:.5px solid rgba(255,255,255,.05);}
-.pt-name{font-size:16.5px!important;}.pd{font-size:13.75px!important;}
-.pi,.pw,.pp{font-size:13.2px!important;}.px-body{font-size:13.2px!important;}
-.pf-thesis{font-size:13.2px!important;}.px-risks li{font-size:12.65px!important;}
-.ps-v{font-size:16.5px!important;}.ab-name{font-size:14.3px!important;}
-.ab-sub{font-size:12.1px!important;}.ab-search{font-size:14px!important;}
-.ab-tab{font-size:12px!important;}
+.pf-thesis{background:rgba(46,125,82,.07);border-left:2px solid rgba(46,125,82,.4);padding:7px 10px;border-radius:0 8px 8px 0;font-size:13px;color:rgba(120,220,160,.9);line-height:1.6;margin:5px 0;}
 </style>
 </head>
 <body>
 <div id="map-wrap">
 <div id="ngm"></div>
 <div id="header">
-<div class="glass" style="padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(46,125,82,.25);">
-  <div style="display:flex;align-items:center;gap:12px;">
-    <img style="height:20px;opacity:.92;" src="https://cdn.prod.website-files.com/6978550a664b785d36028c0b/699992656dd2d7f4c1325884_Norhaven_UAE_Primary_Logo_Green.svg" alt="Norhaven"/>
-    <div style="width:.5px;height:28px;background:rgba(46,125,82,.3);"></div>
-    <div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,.92);letter-spacing:-.02em;">Nigeria Deal Intelligence</div>
-        <div class="nh-badge"><div class="nh-dot"></div>Live</div>
-      </div>
-      <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:3px;">NNPC Project Jewels &middot; FMWR Dams Compendium &middot; 251 Assets &middot; Proprietary</div>
-    </div>
+<div class="panel hbar">
+  <div class="logo-area">
+    <img src="https://cdn.prod.website-files.com/6978550a664b785d36028c0b/699992656dd2d7f4c1325884_Norhaven_UAE_Primary_Logo_Green.svg" alt="Norhaven"/>
+    <div class="htitle">Nigeria Deal Intelligence</div>
+    <div class="nh-badge"><div class="nh-dot"></div>Live</div>
   </div>
-  <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-    <div class="stat-btn" id="btn-all" onclick="openBrowser('all')">
-      <div id="stat-total" style="font-size:18px;font-weight:600;color:rgba(255,255,255,.82);line-height:1.1;">&#8212;</div>
-      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.28);margin-top:2px;">Assets &#8595;</div>
-    </div>
-    <div style="width:.5px;height:32px;background:rgba(255,255,255,.07);"></div>
-    <div class="stat-btn" id="btn-minerals" onclick="openBrowser('minerals')">
-      <div style="font-size:18px;font-weight:600;color:rgba(212,175,55,.82);line-height:1.1;">27</div>
-      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.28);margin-top:2px;">Deposits &#8595;</div>
-    </div>
-    <div style="width:.5px;height:32px;background:rgba(255,255,255,.07);"></div>
-    <div class="stat-btn" id="btn-water" onclick="openBrowser('water')">
-      <div style="font-size:18px;font-weight:600;color:rgba(0,212,255,.82);line-height:1.1;">124</div>
-      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.28);margin-top:2px;">Dams &#8595;</div>
-    </div>
-    <div style="width:.5px;height:32px;background:rgba(255,255,255,.07);"></div>
-    <div class="stat-btn" id="btn-energy" onclick="openBrowser('energy')">
-      <div id="stat-og" style="font-size:18px;font-weight:600;color:rgba(255,149,0,.82);line-height:1.1;">&#8212;</div>
-      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.28);margin-top:2px;">Oil &amp; Gas &#8595;</div>
-    </div>
-  </div>
+  <input class="hsearch" type="text" placeholder="Search 251 assets&#8230;" id="header-search" oninput="headerSearchHandler(this.value)"/>
+  <button class="hbtn" id="sidebar-toggle" onclick="toggleSidebar()" title="Layers &amp; Filters">&#9776;</button>
 </div>
 </div>
 <div id="ab" class="glass">
@@ -168,62 +182,78 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
   </div>
   <div id="ab-list"></div>
 </div>
-<div style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:1000;pointer-events:none;"><div style="display:flex;align-items:center;gap:8px;background:rgba(18,18,22,.7);backdrop-filter:blur(10px);border:.5px solid rgba(46,125,82,.2);border-radius:20px;padding:5px 14px;"><img src="https://cdn.prod.website-files.com/6978550a664b785d36028c0b/699992656dd2d7f4c1325884_Norhaven_UAE_Primary_Logo_Green.svg" style="height:14px;opacity:.6;" alt="Norhaven"/><span style="font-size:10px;color:rgba(255,255,255,.28);letter-spacing:.04em;">Proprietary Intelligence Platform</span></div></div>
-<div id="layers-panel">
-<div class="glass" style="padding:12px 14px;">
-  <div style="font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:9px;">Layers</div>
-  <div id="cpills" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;"></div>
-  <div style="height:.5px;background:rgba(255,255,255,.06);margin-bottom:9px;"></div>
-  <div style="font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:8px;">Overlays</div>
-  <div style="display:flex;flex-wrap:wrap;gap:6px;">
-    <div class="cpill" id="ov-belts" onclick="togOv('belts')"><div class="cdot" style="background:#FFD700;"></div>Mineral Zones</div>
-    <div class="cpill" id="ov-rivers" onclick="togOv('rivers')"><div class="cdot" style="background:#00D4FF;"></div>River Corridors</div>
-    <div class="cpill" id="ov-border" onclick="togOv('border')"><div class="cdot" style="background:rgba(255,255,255,.5);"></div>Border</div>
+<div id="sidebar" class="panel">
+  <div class="sb-head">
+    <div class="sb-title">Layers &amp; Filters</div>
+    <button class="sb-close" onclick="toggleSidebar()">&#10005;</button>
+  </div>
+  <div class="sb-body">
+    <div class="sb-section">
+      <div class="sb-label">Overview</div>
+      <div id="sc"></div>
+    </div>
+    <div class="sb-sep"></div>
+    <div class="sb-section">
+      <div class="sb-label">Data Layers</div>
+      <div id="cpills" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
+    </div>
+    <div class="sb-sep"></div>
+    <div class="sb-section">
+      <div class="sb-label">Overlays</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;">
+        <div class="cpill" id="ov-belts" onclick="togOv('belts')"><div class="cdot" style="background:#FFD700;"></div>Mineral Zones</div>
+        <div class="cpill" id="ov-rivers" onclick="togOv('rivers')"><div class="cdot" style="background:#00D4FF;"></div>River Corridors</div>
+        <div class="cpill" id="ov-border" onclick="togOv('border')"><div class="cdot" style="background:rgba(255,255,255,.5);"></div>Border</div>
+      </div>
+    </div>
+    <div class="sb-sep"></div>
+    <div class="sb-section">
+      <div class="sb-label">Filters</div>
+      <div class="filter-panel" id="mineral-filter">
+        <div class="panel-label" style="color:rgba(212,175,55,.7);">Minerals</div>
+        <div class="fpill-item min-on" id="mf-all" onclick="setMinFilter('all')">All Minerals <span class="fc">27</span></div>
+        <div class="fpill-item" id="mf-precious" onclick="setMinFilter('precious')">&#11088; Precious <span class="fc">4</span></div>
+        <div class="fpill-item" id="mf-base" onclick="setMinFilter('base')">&#9658; Base &amp; Iron <span class="fc">7</span></div>
+        <div class="fpill-item" id="mf-critical" onclick="setMinFilter('critical')">&#9889; Critical Battery <span class="fc">2</span></div>
+        <div class="fpill-item" id="mf-energy" onclick="setMinFilter('energy')">&#9670; Energy <span class="fc">5</span></div>
+        <div class="fpill-item" id="mf-industrial" onclick="setMinFilter('industrial')">&#9632; Industrial <span class="fc">9</span></div>
+      </div>
+      <div class="filter-panel" id="og-filter">
+        <div class="panel-label" style="color:rgba(255,149,0,.7);">Oil &amp; Gas</div>
+        <div class="fpill-item og-on" id="ogf-all" onclick="setOGFilter('all')">All O&amp;G <span class="fc" id="ogfc-all">&#8212;</span></div>
+        <div class="fpill-item" id="ogf-ports" onclick="setOGFilter('ports')">&#127959; Ports &amp; Assets <span class="fc" id="ogfc-ports">&#8212;</span></div>
+        <div class="panel-sep"></div>
+        <div class="fpill-item" id="ogf-priority" onclick="setOGFilter('priority')"><div style="width:8px;height:8px;background:#00E676;border-radius:50%;flex-shrink:0;"></div>Priority OMLs <span class="fc">18</span></div>
+        <div class="fpill-item" id="ogf-maintain" onclick="setOGFilter('maintain')"><div style="width:8px;height:8px;background:#40C4FF;border-radius:50%;flex-shrink:0;"></div>Maintain OMLs <span class="fc">21</span></div>
+        <div class="fpill-item" id="ogf-farmdown" onclick="setOGFilter('farmdown')"><div style="width:8px;height:8px;background:#FFD740;border-radius:50%;flex-shrink:0;"></div>Farm Down OMLs <span class="fc">9</span></div>
+        <div class="fpill-item" id="ogf-divest" onclick="setOGFilter('divest')"><div style="width:8px;height:8px;background:#FF6B6B;border-radius:50%;flex-shrink:0;"></div>Divest OMLs <span class="fc">16</span></div>
+        <div class="panel-sep"></div>
+        <div class="fpill-item" id="ogf-gas" onclick="setOGFilter('gas')">&#9981; Gas-Flagged <span class="fc" id="ogfc-gas">&#8212;</span></div>
+      </div>
+      <div class="filter-panel" id="dam-filter">
+        <div class="panel-label" style="color:rgba(0,212,255,.7);">Dams</div>
+        <div class="fpill-item dam-on" id="df-all" onclick="setDamFilter('all')">All Dams <span class="fc">124</span></div>
+        <div class="fpill-item" id="df-priority" onclick="setDamFilter('priority')">&#9733; Priority <span class="fc">30</span></div>
+        <div class="fpill-item" id="df-hydro" onclick="setDamFilter('hydro')">&#9889; Hydro Only <span class="fc" id="dc-h">&#8212;</span></div>
+        <div class="fpill-item" id="df-large" onclick="setDamFilter('large')">&#9671; Large Only <span class="fc" id="dc-l">&#8212;</span></div>
+        <div class="panel-sep"></div>
+        <div class="sb-label" style="margin-bottom:5px;">Legend</div>
+        <div class="legend-row"><div style="width:9px;height:9px;background:#00D4FF;transform:rotate(45deg);border-radius:2px;flex-shrink:0;"></div>Hydro dam (MW)</div>
+        <div class="legend-row"><div style="width:9px;height:9px;background:#00C896;border-radius:2px;flex-shrink:0;"></div>Large dam</div>
+        <div class="legend-row"><div style="width:9px;height:9px;background:#4A8FBF;border-radius:2px;flex-shrink:0;"></div>Medium dam</div>
+        <div class="legend-row"><div style="width:6px;height:6px;background:rgba(100,160,200,.5);border-radius:50%;flex-shrink:0;margin-left:1px;"></div>Small dam</div>
+      </div>
+    </div>
+    <div style="padding:8px 0;text-align:center;">
+      <div style="display:inline-flex;align-items:center;gap:6px;opacity:.3;">
+        <img src="https://cdn.prod.website-files.com/6978550a664b785d36028c0b/699992656dd2d7f4c1325884_Norhaven_UAE_Primary_Logo_Green.svg" style="height:12px;" alt="Norhaven"/>
+        <span style="font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.03em;">Proprietary Intelligence</span>
+      </div>
+    </div>
   </div>
 </div>
-</div>
-<div id="filter-panels">
-  <div class="filter-panel glass" id="mineral-filter" style="padding:12px 14px;min-width:185px;">
-    <div class="panel-label" style="color:rgba(212,175,55,.7);">Mineral Filter</div>
-    <div class="src-note">Source: NGSA Mineral Survey &middot; MMSD Nigeria</div>
-    <div class="fpill-item min-on" id="mf-all" onclick="setMinFilter('all')">All Minerals <span class="fc">27</span></div>
-    <div class="panel-sep"></div>
-    <div class="fpill-item" id="mf-precious" onclick="setMinFilter('precious')">&#11088; Precious <span class="fc">4</span></div>
-    <div class="fpill-item" id="mf-base" onclick="setMinFilter('base')">&#9658; Base &amp; Iron <span class="fc">7</span></div>
-    <div class="fpill-item" id="mf-critical" onclick="setMinFilter('critical')">&#9889; Critical Battery <span class="fc">2</span></div>
-    <div class="fpill-item" id="mf-energy" onclick="setMinFilter('energy')">&#9670; Energy <span class="fc">5</span></div>
-    <div class="fpill-item" id="mf-industrial" onclick="setMinFilter('industrial')">&#9632; Industrial <span class="fc">9</span></div>
-  </div>
-
-  <div class="filter-panel glass" id="og-filter" style="padding:12px 14px;min-width:185px;">
-    <div class="panel-label" style="color:rgba(255,149,0,.7);">Oil &amp; Gas Filter</div>
-    <div class="src-note">Source: NNPC Project Jewels 2024 &middot; DPR Nigeria</div>
-    <div class="fpill-item og-on" id="ogf-all" onclick="setOGFilter('all')">All O&amp;G <span class="fc" id="ogfc-all">&#8212;</span></div>
-    <div class="fpill-item" id="ogf-ports" onclick="setOGFilter('ports')">&#127959; Ports &amp; Assets <span class="fc" id="ogfc-ports">&#8212;</span></div>
-    <div class="panel-sep"></div>
-    <div class="fpill-item" id="ogf-priority" onclick="setOGFilter('priority')"><div style="width:9px;height:9px;background:#00E676;border-radius:50%;flex-shrink:0;"></div>Priority OMLs <span class="fc">18</span></div>
-    <div class="fpill-item" id="ogf-maintain" onclick="setOGFilter('maintain')"><div style="width:9px;height:9px;background:#40C4FF;border-radius:50%;flex-shrink:0;"></div>Maintain OMLs <span class="fc">21</span></div>
-    <div class="fpill-item" id="ogf-farmdown" onclick="setOGFilter('farmdown')"><div style="width:9px;height:9px;background:#FFD740;border-radius:50%;flex-shrink:0;"></div>Farm Down OMLs <span class="fc">9</span></div>
-    <div class="fpill-item" id="ogf-divest" onclick="setOGFilter('divest')"><div style="width:9px;height:9px;background:#FF6B6B;border-radius:50%;flex-shrink:0;"></div>Divest OMLs <span class="fc">16</span></div>
-    <div class="panel-sep"></div>
-    <div class="fpill-item" id="ogf-gas" onclick="setOGFilter('gas')">&#9981; Gas-Flagged <span class="fc" id="ogfc-gas">&#8212;</span></div>
-  </div>
-  <div class="filter-panel glass" id="dam-filter" style="padding:12px 14px;min-width:185px;">
-    <div class="panel-label" style="color:rgba(0,212,255,.7);">Dam Filter</div>
-    <div class="src-note">Source: FMWR Compendium of Dams 2023</div>
-    <div class="fpill-item dam-on" id="df-all" onclick="setDamFilter('all')">All Dams <span class="fc">124</span></div>
-    <div class="fpill-item" id="df-priority" onclick="setDamFilter('priority')">&#9733; Priority <span class="fc">30</span></div>
-    <div class="fpill-item" id="df-hydro" onclick="setDamFilter('hydro')">&#9889; Hydro Only <span class="fc" id="dc-h">&#8212;</span></div>
-    <div class="fpill-item" id="df-large" onclick="setDamFilter('large')">&#9671; Large Only <span class="fc" id="dc-l">&#8212;</span></div>
-    <div class="panel-sep"></div>
-    <div style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.22);margin-bottom:7px;">Legend</div>
-    <div class="legend-row"><div style="width:10px;height:10px;background:#00D4FF;transform:rotate(45deg);border-radius:2px;flex-shrink:0;"></div>Hydro dam (MW)</div>
-    <div class="legend-row"><div style="width:10px;height:10px;background:#00C896;border-radius:2px;flex-shrink:0;"></div>Large dam</div>
-    <div class="legend-row"><div style="width:10px;height:10px;background:#4A8FBF;border-radius:2px;flex-shrink:0;"></div>Medium dam</div>
-    <div class="legend-row"><div style="width:7px;height:7px;background:rgba(100,160,200,.5);border-radius:50%;flex-shrink:0;margin-left:1px;"></div>Small dam</div>
-  </div>
-</div>
-<div id="sc"></div>
+<div id="layers-panel"></div>
+<div id="filter-panels"></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
@@ -232,7 +262,7 @@ var allPopups = [];
 var AB_CATS = [{"key": "all", "label": "All", "color": "rgba(255,255,255,.5)"}, {"key": "portfolio", "label": "\u25c6 Norhaven", "color": "#2E7D52"}, {"key": "minerals", "label": "Minerals", "color": "#D4AF37"}, {"key": "water", "label": "Water Infra", "color": "#00D4FF"}, {"key": "energy", "label": "Oil & Gas", "color": "#FF9500"}, {"key": "utilities", "label": "Power & Utilities", "color": "#5E5CE6"}, {"key": "transport", "label": "Transportation", "color": "#32ADE6"}, {"key": "agri", "label": "Agri-Exports", "color": "#30D158"}, {"key": "industrial", "label": "Industrial Zones", "color": "#22CC88"}, {"key": "emergency", "label": "Emergency Response", "color": "#FF3B30"}, {"key": "proposed", "label": "Lokoja Node", "color": "#FFD60A"}];
 var CAT_COLORS = [{"key": "utilities", "label": "Power & Utilities", "color": "#5E5CE6"}, {"key": "transport", "label": "Transportation", "color": "#32ADE6"}, {"key": "agri", "label": "Agri-Exports", "color": "#30D158"}, {"key": "industrial", "label": "Industrial Zones", "color": "#22CC88"}, {"key": "emergency", "label": "Emergency Response", "color": "#FF3B30"}, {"key": "proposed", "label": "Lokoja Node", "color": "#FFD60A"}];
 
-var map = L.map('ngm',{zoomControl:true}).setView([9,8],6);
+var map = L.map('ngm',{zoomControl:true,minZoom:6,maxBounds:[[2.5,1.5],[15,15.5]],maxBoundsViscosity:0.9}).setView([9,8],6);
 L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,attribution:'&copy; Google'}).addTo(map);
 L.tileLayer('https://mt{s}.google.com/vt/lyrs=h&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,opacity:.75}).addTo(map);
 
@@ -849,25 +879,50 @@ function renderABList(){
   });
   list.innerHTML=html;
 }
+function toggleSidebar(){
+  var sb=document.getElementById('sidebar');
+  var btn=document.getElementById('sidebar-toggle');
+  if(sb.classList.contains('open')){
+    sb.classList.remove('open');
+    sb.classList.add('closing');
+    btn.classList.remove('active');
+    setTimeout(function(){sb.classList.remove('closing');},200);
+  } else {
+    sb.classList.remove('closing');
+    sb.classList.add('open');
+    btn.classList.add('active');
+  }
+}
+function headerSearchHandler(val){
+  if(val.length>0){
+    abFilter='all';
+    document.querySelectorAll('.ab-tab').forEach(function(t){t.classList.remove('on');});
+    var at=document.getElementById('abt-all');if(at)at.classList.add('on');
+    var ab=document.getElementById('ab');
+    ab.classList.add('open');
+    var s=document.getElementById('ab-search');
+    if(s) s.value=val;
+    renderABList();
+  } else {
+    closeBrowser();
+  }
+}
 function openBrowser(filter){
   var ab=document.getElementById('ab');
   if(ab.classList.contains('open')&&abFilter===filter){closeBrowser();return;}
   abFilter=filter;
-  document.querySelectorAll('.stat-btn').forEach(function(b){b.classList.remove('active');});
-  var btnMap={minerals:'btn-minerals',water:'btn-water',energy:'btn-energy'};
-  var btn=document.getElementById(btnMap[filter]||'btn-all');
-  if(btn) btn.classList.add('active');
   document.querySelectorAll('.ab-tab').forEach(function(t){t.classList.remove('on');});
   var st=document.getElementById('abt-'+filter);
   if(st) st.classList.add('on');
   ab.classList.add('open');
   var s=document.getElementById('ab-search');
   if(s) s.value='';
+  document.getElementById('header-search').value='';
   renderABList();
 }
 function closeBrowser(){
   document.getElementById('ab').classList.remove('open');
-  document.querySelectorAll('.stat-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('header-search').value='';
 }
 window.flyToAsset=function(lat,lng,idx){
   closeBrowser();
@@ -934,23 +989,20 @@ function togOv(k){
 
 document.addEventListener('click',function(e){
   var ab=document.getElementById('ab');
-  var statBtns=['btn-all','btn-minerals','btn-water','btn-energy'];
-  if(ab&&!ab.contains(e.target)&&statBtns.every(function(id){var el=document.getElementById(id);return!el||!el.contains(e.target);}))
+  var hs=document.getElementById('header-search');
+  if(ab&&!ab.contains(e.target)&&hs&&!hs.contains(e.target))
     closeBrowser();
 });
 map.on('click',closeBrowser);
 
 
-document.getElementById('stat-total').textContent=allAssets.length;
-document.getElementById('stat-og').textContent=71;
 document.getElementById('dc-h').textContent='18';
 document.getElementById('dc-l').textContent='32';
 document.getElementById('ogfc-all').textContent=71;
 document.getElementById('ogfc-ports').textContent=8;
 document.getElementById('ogfc-gas').textContent=12;
-// mineral filter in panel
 
-document.getElementById('sc').innerHTML="<div class=\"sc-item\"><div class=\"sc-label\">Priority OMLs</div><div class=\"sc-value\" style=\"color:#00E676;\">18</div></div><div class=\"sc-item\"><div class=\"sc-label\">Farm Down OMLs</div><div class=\"sc-value\" style=\"color:#FFD740;\">9</div></div><div class=\"sc-item\"><div class=\"sc-label\">Total Oil & Gas</div><div class=\"sc-value\" style=\"color:#FF9500;\">71</div></div><div class=\"sc-item\"><div class=\"sc-label\">Solid Minerals</div><div class=\"sc-value\" style=\"color:#D4AF37;\">27</div></div><div class=\"sc-item\"><div class=\"sc-label\">Hydro Dams</div><div class=\"sc-value\" style=\"color:#00D4FF;\">18</div></div><div class=\"sc-item\"><div class=\"sc-label\">All Dams (GPS)</div><div class=\"sc-value\" style=\"color:rgba(0,180,180,.8);\">124</div></div><div class=\"sc-item\"><div class=\"sc-label\">Transport</div><div class=\"sc-value\" style=\"color:#32ADE6;\">7</div></div><div class=\"sc-item\"><div class=\"sc-label\">Agri-Exports</div><div class=\"sc-value\" style=\"color:#30D158;\">5</div></div>";
+document.getElementById('sc').innerHTML="<div class=\"sc-item\"><div class=\"sc-label\">Total Assets</div><div class=\"sc-value\" style=\"color:rgba(255,255,255,.8);\">"+allAssets.length+"</div></div><div class=\"sc-item\"><div class=\"sc-label\">Oil &amp; Gas</div><div class=\"sc-value\" style=\"color:#FF9500;\">71</div></div><div class=\"sc-item\"><div class=\"sc-label\">Dams</div><div class=\"sc-value\" style=\"color:#00D4FF;\">124</div></div><div class=\"sc-item\"><div class=\"sc-label\">Minerals</div><div class=\"sc-value\" style=\"color:#D4AF37;\">27</div></div><div class=\"sc-item\"><div class=\"sc-label\">Priority OMLs</div><div class=\"sc-value\" style=\"color:#00E676;\">18</div></div><div class=\"sc-item\"><div class=\"sc-label\">Transport</div><div class=\"sc-value\" style=\"color:#32ADE6;\">7</div></div>";
 document.getElementById('og-filter').classList.add('visible');
 document.getElementById('dam-filter').classList.add('visible');
 buildABTabs();
@@ -977,10 +1029,6 @@ setTimeout(function(){
   });
   // Keep Portfolio pill lit
   pfPill.classList.remove('off');
-  // Hide filter panels
-  document.getElementById('og-filter').classList.remove('visible');
-  document.getElementById('dam-filter').classList.remove('visible');
-  if(document.getElementById('mineral-filter')) document.getElementById('mineral-filter').classList.remove('visible');
 }, 50);
 
 
