@@ -996,7 +996,8 @@ function togOv(k){
 document.addEventListener('click',function(e){
   var ab=document.getElementById('ab');
   var hs=document.getElementById('header-search');
-  if(ab&&!ab.contains(e.target)&&hs&&!hs.contains(e.target))
+  var eb=document.getElementById('explore-toggle');
+  if(ab&&!ab.contains(e.target)&&hs&&!hs.contains(e.target)&&(!eb||!eb.contains(e.target)))
     closeBrowser();
 });
 map.on('click',closeBrowser);
