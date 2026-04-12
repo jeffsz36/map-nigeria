@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v15</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v16</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',system-ui,sans-serif;margin:0;padding:0;}
@@ -156,6 +156,34 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 .fpill.active{background:rgba(10,132,255,.12);border-color:rgba(10,132,255,.3);}
 .pf-bar{background:linear-gradient(90deg,rgba(46,125,82,.12),transparent);border-left:2px solid #2E7D52;padding:5px 10px;margin-bottom:8px;border-radius:0 6px 6px 0;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(46,125,82,.85);}
 .pf-thesis{background:rgba(46,125,82,.07);border-left:2px solid rgba(46,125,82,.4);padding:7px 10px;border-radius:0 8px 8px 0;font-size:13px;color:rgba(120,220,160,.9);line-height:1.6;margin:5px 0;}
+/* v16 — Explore button + layer accordion */
+.hbtn-label{width:auto;padding:0 12px;gap:6px;font-size:12px;font-weight:500;letter-spacing:.02em;}
+.hbtn-label.active{background:rgba(212,175,55,.14);border-color:rgba(212,175,55,.45);color:rgba(235,200,100,.95);}
+.lyr-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;border:.5px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);margin-bottom:6px;cursor:pointer;transition:background .14s,border-color .14s;}
+.lyr-row:hover{background:rgba(255,255,255,.06);}
+.lyr-row.on{border-color:rgba(212,175,55,.32);background:rgba(212,175,55,.05);}
+.lyr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 2px rgba(0,0,0,.3);}
+.lyr-name{flex:1;font-size:13px;font-weight:500;color:rgba(255,255,255,.82);}
+.lyr-row.off .lyr-name{color:rgba(255,255,255,.38);}
+.lyr-count{font-size:10px;color:rgba(255,255,255,.32);font-variant-numeric:tabular-nums;letter-spacing:.02em;}
+.lyr-caret{width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,.35);transition:transform .18s;}
+.lyr-caret.open{transform:rotate(90deg);color:rgba(212,175,55,.8);}
+.lyr-filters{display:none;padding:4px 2px 10px 22px;animation:none;}
+.lyr-filters.open{display:block;animation:dropIn .18s ease both;}
+.lyr-fchip{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:12px;border:.5px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.55);cursor:pointer;margin:3px 3px 0 0;background:transparent;transition:background .12s,border-color .12s,color .12s;user-select:none;}
+.lyr-fchip:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.85);}
+.lyr-fchip.on{background:rgba(212,175,55,.12);border-color:rgba(212,175,55,.4);color:rgba(235,200,100,.95);}
+.lyr-fchip.on-water{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.4);color:rgba(120,220,255,.95);}
+.lyr-fchip.on-og{background:rgba(255,149,0,.1);border-color:rgba(255,149,0,.4);color:rgba(255,190,90,.95);}
+.lyr-fchip .fc{font-size:9px;opacity:.55;margin-left:2px;font-variant-numeric:tabular-nums;}
+#ab.explore-mode{left:50%;right:auto;transform:translateX(-50%);max-width:640px;width:calc(100% - 24px);}
+.ab-cat-head{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;user-select:none;border-top:.5px solid rgba(255,255,255,.04);}
+.ab-cat-head:hover{background:rgba(255,255,255,.03);}
+.ab-cat-head .ab-cat-caret{font-size:10px;color:rgba(255,255,255,.4);transition:transform .18s;width:12px;text-align:center;}
+.ab-cat-head .ab-cat-caret.open{transform:rotate(90deg);color:#D4AF37;}
+.ab-cat-title{flex:1;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.78);}
+.ab-cat-n{font-size:10px;color:rgba(255,255,255,.35);font-variant-numeric:tabular-nums;}
+#layers-panel,#filter-panels{display:none!important;}
 </style>
 </head>
 <body>
@@ -169,7 +197,8 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
     <div class="nh-badge"><div class="nh-dot"></div>Live</div>
   </div>
   <input class="hsearch" type="text" placeholder="Search 264 assets&#8230;" id="header-search" oninput="headerSearchHandler(this.value)"/>
-  <button class="hbtn" id="sidebar-toggle" onclick="toggleSidebar()" title="Layers &amp; Filters">&#9776;</button>
+  <button class="hbtn hbtn-label" id="explore-toggle" onclick="toggleExplore()" title="Browse assets by category">Explore</button>
+  <button class="hbtn" id="sidebar-toggle" onclick="toggleSidebar()" title="Layers &amp; Overlays">&#9776;</button>
 </div>
 </div>
 <div id="ab" class="glass">
@@ -184,7 +213,7 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 </div>
 <div id="sidebar" class="panel">
   <div class="sb-head">
-    <div class="sb-title">Layers &amp; Filters</div>
+    <div class="sb-title">Layers &amp; Overlays</div>
     <button class="sb-close" onclick="toggleSidebar()">&#10005;</button>
   </div>
   <div class="sb-body">
@@ -195,7 +224,7 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
     <div class="sb-sep"></div>
     <div class="sb-section">
       <div class="sb-label">Data Layers</div>
-      <div id="cpills" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
+      <div id="lyrs"></div>
     </div>
     <div class="sb-sep"></div>
     <div class="sb-section">
@@ -203,44 +232,6 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
       <div style="display:flex;flex-wrap:wrap;gap:5px;">
         <div class="cpill" id="ov-belts" onclick="togOv('belts')"><div class="cdot" style="background:#FFD700;"></div>Mineral Zones</div>
         <div class="cpill" id="ov-rivers" onclick="togOv('rivers')"><div class="cdot" style="background:#00D4FF;"></div>River Corridors</div>
-      </div>
-    </div>
-    <div class="sb-sep"></div>
-    <div class="sb-section">
-      <div class="sb-label">Filters</div>
-      <div class="filter-panel" id="mineral-filter">
-        <div class="panel-label" style="color:rgba(212,175,55,.7);">Minerals</div>
-        <div class="fpill-item min-on" id="mf-all" onclick="setMinFilter('all')">All Minerals <span class="fc">70</span></div>
-        <div class="fpill-item" id="mf-precious" onclick="setMinFilter('precious')">&#11088; Precious <span class="fc">13</span></div>
-        <div class="fpill-item" id="mf-base" onclick="setMinFilter('base')">&#9658; Base &amp; Iron <span class="fc">16</span></div>
-        <div class="fpill-item" id="mf-critical" onclick="setMinFilter('critical')">&#9889; Critical Battery <span class="fc">5</span></div>
-        <div class="fpill-item" id="mf-energy" onclick="setMinFilter('energy')">&#9670; Energy <span class="fc">9</span></div>
-        <div class="fpill-item" id="mf-industrial" onclick="setMinFilter('industrial')">&#9632; Industrial <span class="fc">11</span></div>
-      </div>
-      <div class="filter-panel" id="og-filter">
-        <div class="panel-label" style="color:rgba(255,149,0,.7);">Oil &amp; Gas</div>
-        <div class="fpill-item og-on" id="ogf-all" onclick="setOGFilter('all')">All O&amp;G <span class="fc" id="ogfc-all">&#8212;</span></div>
-        <div class="fpill-item" id="ogf-ports" onclick="setOGFilter('ports')">&#127959; Ports &amp; Assets <span class="fc" id="ogfc-ports">&#8212;</span></div>
-        <div class="panel-sep"></div>
-        <div class="fpill-item" id="ogf-priority" onclick="setOGFilter('priority')"><div style="width:8px;height:8px;background:#00E676;border-radius:50%;flex-shrink:0;"></div>Priority OMLs <span class="fc">18</span></div>
-        <div class="fpill-item" id="ogf-maintain" onclick="setOGFilter('maintain')"><div style="width:8px;height:8px;background:#40C4FF;border-radius:50%;flex-shrink:0;"></div>Maintain OMLs <span class="fc">21</span></div>
-        <div class="fpill-item" id="ogf-farmdown" onclick="setOGFilter('farmdown')"><div style="width:8px;height:8px;background:#FFD740;border-radius:50%;flex-shrink:0;"></div>Farm Down OMLs <span class="fc">9</span></div>
-        <div class="fpill-item" id="ogf-divest" onclick="setOGFilter('divest')"><div style="width:8px;height:8px;background:#FF6B6B;border-radius:50%;flex-shrink:0;"></div>Divest OMLs <span class="fc">16</span></div>
-        <div class="panel-sep"></div>
-        <div class="fpill-item" id="ogf-gas" onclick="setOGFilter('gas')">&#9981; Gas-Flagged <span class="fc" id="ogfc-gas">&#8212;</span></div>
-      </div>
-      <div class="filter-panel" id="dam-filter">
-        <div class="panel-label" style="color:rgba(0,212,255,.7);">Dams</div>
-        <div class="fpill-item dam-on" id="df-all" onclick="setDamFilter('all')">All Dams <span class="fc">124</span></div>
-        <div class="fpill-item" id="df-priority" onclick="setDamFilter('priority')">&#9733; Priority <span class="fc">30</span></div>
-        <div class="fpill-item" id="df-hydro" onclick="setDamFilter('hydro')">&#9889; Hydro Only <span class="fc" id="dc-h">&#8212;</span></div>
-        <div class="fpill-item" id="df-large" onclick="setDamFilter('large')">&#9671; Large Only <span class="fc" id="dc-l">&#8212;</span></div>
-        <div class="panel-sep"></div>
-        <div class="sb-label" style="margin-bottom:5px;">Legend</div>
-        <div class="legend-row"><div style="width:9px;height:9px;background:#00D4FF;transform:rotate(45deg);border-radius:2px;flex-shrink:0;"></div>Hydro dam (MW)</div>
-        <div class="legend-row"><div style="width:9px;height:9px;background:#00C896;border-radius:2px;flex-shrink:0;"></div>Large dam</div>
-        <div class="legend-row"><div style="width:9px;height:9px;background:#4A8FBF;border-radius:2px;flex-shrink:0;"></div>Medium dam</div>
-        <div class="legend-row"><div style="width:6px;height:6px;background:rgba(100,160,200,.5);border-radius:50%;flex-shrink:0;margin-left:1px;"></div>Small dam</div>
       </div>
     </div>
     <div style="padding:8px 0;text-align:center;">
@@ -251,6 +242,10 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
     </div>
   </div>
 </div>
+<div id="cpills" style="display:none;"></div>
+<div id="mineral-filter" style="display:none;"></div>
+<div id="og-filter" style="display:none;"></div>
+<div id="dam-filter" style="display:none;"></div>
 <div id="layers-panel"></div>
 <div id="filter-panels"></div>
 </div>
@@ -1007,11 +1002,7 @@ document.addEventListener('click',function(e){
 map.on('click',closeBrowser);
 
 
-document.getElementById('dc-h').textContent='18';
-document.getElementById('dc-l').textContent='32';
-document.getElementById('ogfc-all').textContent=71;
-document.getElementById('ogfc-ports').textContent=8;
-document.getElementById('ogfc-gas').textContent=12;
+(function(){var ids={'dc-h':'18','dc-l':'32','ogfc-all':71,'ogfc-ports':8,'ogfc-gas':12};Object.keys(ids).forEach(function(k){var e=document.getElementById(k);if(e)e.textContent=ids[k];});})();
 
 document.getElementById('sc').innerHTML="<div class=\"sc-item\"><div class=\"sc-label\">Total Assets</div><div class=\"sc-value\" style=\"color:rgba(255,255,255,.8);\">"+allAssets.length+"</div></div><div class=\"sc-item\"><div class=\"sc-label\">Oil &amp; Gas</div><div class=\"sc-value\" style=\"color:#FF9500;\">71</div></div><div class=\"sc-item\"><div class=\"sc-label\">Dams</div><div class=\"sc-value\" style=\"color:#00D4FF;\">124</div></div><div class=\"sc-item\"><div class=\"sc-label\">Minerals</div><div class=\"sc-value\" style=\"color:#D4AF37;\">40</div></div><div class=\"sc-item\"><div class=\"sc-label\">Priority OMLs</div><div class=\"sc-value\" style=\"color:#00E676;\">18</div></div><div class=\"sc-item\"><div class=\"sc-label\">Transport</div><div class=\"sc-value\" style=\"color:#32ADE6;\">7</div></div>";
 document.getElementById('og-filter').classList.add('visible');
@@ -1039,8 +1030,166 @@ setTimeout(function(){
   });
   // Keep Portfolio pill lit
   pfPill.classList.remove('off');
+  if(typeof renderLayers==='function') renderLayers();
 }, 50);
 
+/* ============ v16: Layer accordion + Explore overlay ============ */
+var LAYER_DEFS = [
+  {key:'portfolio', label:'\u25c6 Norhaven Portfolio', color:'#2E7D52',
+   group:function(){return portfolioGroup;},
+   count:function(){return allAssets.filter(function(a){return a.catKey==='portfolio';}).length;},
+   filters:null},
+  {key:'minerals', label:'Minerals', color:'#D4AF37',
+   group:function(){return mineralGroup;},
+   count:function(){return mineralMkrs.length;},
+   filters:[
+     {k:'all',label:'All',n:function(){return mineralMkrs.length;}},
+     {k:'precious',label:'\u2b50 Precious',n:function(){return mineralMkrs.filter(function(m){return m.tags.some(function(t){return MIN_GROUPS.precious.indexOf(t)>=0;});}).length;}},
+     {k:'base',label:'\u25b8 Base & Iron',n:function(){return mineralMkrs.filter(function(m){return m.tags.some(function(t){return MIN_GROUPS.base.indexOf(t)>=0;});}).length;}},
+     {k:'critical',label:'\u26a1 Critical',n:function(){return mineralMkrs.filter(function(m){return m.tags.some(function(t){return MIN_GROUPS.critical.indexOf(t)>=0;});}).length;}},
+     {k:'energy',label:'\u25c6 Energy',n:function(){return mineralMkrs.filter(function(m){return m.tags.some(function(t){return MIN_GROUPS.energy.indexOf(t)>=0;});}).length;}},
+     {k:'industrial',label:'\u25a0 Industrial',n:function(){return mineralMkrs.filter(function(m){return m.tags.some(function(t){return MIN_GROUPS.industrial.indexOf(t)>=0;});}).length;}}
+   ],
+   setFilter:setMinFilter, chipClass:'on', currentFilter:function(){return currentMinFilter;}},
+  {key:'energy', label:'Oil & Gas', color:'#FF9500',
+   group:function(){return energyGroup;},
+   count:function(){return energyMarkers.length;},
+   filters:[
+     {k:'all',label:'All O&G',n:function(){return energyMarkers.length;}},
+     {k:'ports',label:'\u25c6 Ports',n:function(){return 8;}},
+     {k:'priority',label:'\u2022 Priority',n:function(){return 18;}},
+     {k:'maintain',label:'\u2022 Maintain',n:function(){return 21;}},
+     {k:'farmdown',label:'\u2022 Farm Down',n:function(){return 9;}},
+     {k:'divest',label:'\u2022 Divest',n:function(){return 16;}},
+     {k:'gas',label:'\u26fd Gas',n:function(){return 12;}}
+   ],
+   setFilter:setOGFilter, chipClass:'on-og', currentFilter:function(){return currentOGFilter;}},
+  {key:'water', label:'Dams & Reservoirs', color:'#00D4FF',
+   group:function(){return waterGroup;},
+   count:function(){return damMarkers.length;},
+   filters:[
+     {k:'all',label:'All Dams',n:function(){return damMarkers.length;}},
+     {k:'priority',label:'\u2605 Priority',n:function(){return 30;}},
+     {k:'hydro',label:'\u26a1 Hydro',n:function(){return 18;}},
+     {k:'large',label:'\u25c7 Large',n:function(){return 32;}}
+   ],
+   setFilter:setDamFilter, chipClass:'on-water', currentFilter:function(){return currentDamFilter;}}
+];
+CAT_COLORS.forEach(function(cc){
+  LAYER_DEFS.push({key:cc.key,label:cc.label,color:cc.color,
+    group:function(){return catGroups[cc.key];},
+    count:function(){return allAssets.filter(function(a){return a.catKey===cc.key;}).length;},
+    filters:null});
+});
+
+var lyrOpen = {};
+
+function renderLayers(){
+  var host = document.getElementById('lyrs');
+  if(!host) return;
+  host.innerHTML = '';
+  LAYER_DEFS.forEach(function(L){
+    var g = L.group();
+    var on = g && g._map;
+    var hasFilters = L.filters && L.filters.length;
+    var row = document.createElement('div');
+    row.className = 'lyr-row ' + (on?'on':'off');
+    row.id = 'lyr-' + L.key;
+    row.innerHTML =
+      '<div class="lyr-dot" style="background:'+L.color+';"></div>' +
+      '<div class="lyr-name">'+L.label+'</div>' +
+      '<div class="lyr-count">'+L.count()+'</div>' +
+      (hasFilters ? '<div class="lyr-caret'+(lyrOpen[L.key]?' open':'')+'">\u25b6</div>' : '<div style="width:16px;"></div>');
+    row.onclick = function(ev){
+      if(ev.target && ev.target.classList && ev.target.classList.contains('lyr-caret')){
+        if(!hasFilters) return;
+        lyrOpen[L.key] = !lyrOpen[L.key];
+        renderLayers();
+        return;
+      }
+      toggleLayer(L.key);
+    };
+    host.appendChild(row);
+    if(hasFilters){
+      var body = document.createElement('div');
+      body.className = 'lyr-filters' + (lyrOpen[L.key] && on ? ' open' : '');
+      L.filters.forEach(function(f){
+        var chip = document.createElement('span');
+        var isCur = L.currentFilter && L.currentFilter()===f.k;
+        chip.className = 'lyr-fchip' + (isCur ? ' ' + (L.chipClass||'on') : '');
+        chip.innerHTML = f.label + ' <span class="fc">'+f.n()+'</span>';
+        chip.onclick = function(e){ e.stopPropagation(); if(L.setFilter) L.setFilter(f.k); renderLayers(); };
+        body.appendChild(chip);
+      });
+      host.appendChild(body);
+    }
+  });
+}
+
+function toggleLayer(key){
+  var L = LAYER_DEFS.find(function(x){return x.key===key;});
+  if(!L) return;
+  var g = L.group();
+  if(!g) return;
+  if(g._map){ map.removeLayer(g); }
+  else { g.addTo(map); }
+  // Mirror state onto legacy .cpill elements so headerSearch/closeBrowser logic stays consistent
+  if(key==='portfolio' && typeof pfPill!=='undefined'){ pfPill.classList.toggle('off', !g._map); }
+  if(key==='minerals' && typeof mPill!=='undefined'){ mPill.classList.toggle('off', !g._map); }
+  if(key==='energy' && typeof energyPill!=='undefined'){ energyPill.classList.toggle('off', !g._map); }
+  if(key==='water' && typeof wPill!=='undefined'){ wPill.classList.toggle('off', !g._map); }
+  renderLayers();
+}
+
+function toggleExplore(){
+  var ab = document.getElementById('ab');
+  var btn = document.getElementById('explore-toggle');
+  var hs = document.getElementById('header-search');
+  if(ab.classList.contains('open') && ab.classList.contains('explore-mode')){
+    ab.classList.remove('open');
+    ab.classList.remove('explore-mode');
+    if(btn) btn.classList.remove('active');
+    return;
+  }
+  var sb = document.getElementById('sidebar');
+  if(sb && sb.classList.contains('open')){ toggleSidebar(); }
+  abFilter = 'all';
+  document.querySelectorAll('.ab-tab').forEach(function(t){t.classList.remove('on');});
+  var at = document.getElementById('abt-all'); if(at) at.classList.add('on');
+  var s = document.getElementById('ab-search'); if(s) s.value='';
+  if(hs) hs.value='';
+  ab.classList.add('open');
+  ab.classList.add('explore-mode');
+  if(btn) btn.classList.add('active');
+  renderABList();
+}
+
+// When closeBrowser runs, also clear explore button state and explore-mode class
+(function(){
+  var _cb = closeBrowser;
+  closeBrowser = function(){
+    _cb();
+    var ab = document.getElementById('ab');
+    if(ab) ab.classList.remove('explore-mode');
+    var btn = document.getElementById('explore-toggle');
+    if(btn) btn.classList.remove('active');
+  };
+})();
+
+// Dynamic stats panel reflecting true counts
+(function(){
+  var sc = document.getElementById('sc');
+  if(!sc) return;
+  sc.innerHTML =
+    '<div class="sc-item"><div class="sc-label">Total Assets</div><div class="sc-value" style="color:rgba(255,255,255,.85);">'+allAssets.length+'</div></div>'+
+    '<div class="sc-item"><div class="sc-label">Minerals</div><div class="sc-value" style="color:#D4AF37;">'+mineralMkrs.length+'</div></div>'+
+    '<div class="sc-item"><div class="sc-label">Oil & Gas</div><div class="sc-value" style="color:#FF9500;">'+energyMarkers.length+'</div></div>'+
+    '<div class="sc-item"><div class="sc-label">Dams</div><div class="sc-value" style="color:#00D4FF;">'+damMarkers.length+'</div></div>'+
+    '<div class="sc-item"><div class="sc-label">Portfolio</div><div class="sc-value" style="color:#2E7D52;">'+allAssets.filter(function(a){return a.catKey==='portfolio';}).length+'</div></div>'+
+    '<div class="sc-item"><div class="sc-label">Categories</div><div class="sc-value" style="color:#32ADE6;">'+LAYER_DEFS.length+'</div></div>';
+})();
+
+renderLayers();
 
 </script>
 </body>
