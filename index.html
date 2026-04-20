@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v17</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v18</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',system-ui,sans-serif;margin:0;padding:0;}
@@ -190,6 +190,10 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 .ab-cat-title{flex:1;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.78);}
 .ab-cat-n{font-size:10px;color:rgba(255,255,255,.35);font-variant-numeric:tabular-nums;}
 #layers-panel,#filter-panels{display:none!important;}
+/* v18 — Nigeria vs neighbours contrast (satellite basemap) */
+.leaflet-pane.nh-dim-pane{ mix-blend-mode: multiply; pointer-events: none; }
+.leaflet-pane.nh-darken-pane{ mix-blend-mode: multiply; pointer-events: none; }
+.leaflet-pane.nh-satboost-pane{ mix-blend-mode: saturation; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -265,6 +269,63 @@ var CAT_COLORS = [{"key": "utilities", "label": "Power & Utilities", "color": "#
 var map = L.map('ngm',{zoomControl:true,minZoom:6,maxBounds:[[2.5,1.5],[15,15.5]],maxBoundsViscosity:0.9}).setView([9,8],6);
 L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,attribution:'&copy; Google'}).addTo(map);
 L.tileLayer('https://mt{s}.google.com/vt/lyrs=h&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,opacity:.75}).addTo(map);
+
+/* ===== Nigeria vs neighbours contrast overlay =====
+   Strategy: Nigeria stays full-colour satellite; everything outside is multiplied toward
+   near-black via mix-blend-mode panes. Nigeria gets a subtle saturation boost so its
+   colours pop against the desaturated outside. Border = crisp white outline. */
+(function(){
+  function mkPane(name, cls, z){
+    var p = map.createPane(name);
+    p.classList.add(cls);
+    p.style.zIndex = z;
+    p.style.pointerEvents = 'none';
+    return p;
+  }
+  // Tile z-index is 200, overlay is 400 — place contrast panes between them.
+  mkPane('nhDim',      'nh-dim-pane',      395); // primary dim — multiply dark teal outside
+  mkPane('nhDarken',   'nh-darken-pane',   396); // stacked second multiply for stronger effect
+  mkPane('nhSatBoost', 'nh-satboost-pane', 397); // saturation blend inside Nigeria
+
+  fetch('https://cdn.jsdelivr.net/npm/world-geojson@0.0.5/countries/nigeria.json')
+    .catch(function(){ return fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/NGA.geo.json'); })
+    .then(function(r){ return r.json(); })
+    .then(function(gj){
+      var feats = gj.features || [gj];
+      var nga = feats.find(function(f){ return (f.properties||{}).ISO_A3==='NGA' || (f.properties||{}).iso_a3==='NGA' || (f.properties||{}).name==='Nigeria'; }) || feats[0];
+      var coords = nga.geometry.coordinates;
+      var polys = nga.geometry.type==='MultiPolygon' ? coords : [coords];
+
+      // World ring minus Nigeria holes (fillRule evenodd paints outside only)
+      var worldRing = [[-89.9,-179.9],[89.9,-179.9],[89.9,179.9],[-89.9,179.9]];
+      var dimRings = [worldRing];
+      var nigeriaRings = [];
+      polys.forEach(function(p){ p.forEach(function(ring){
+        var latlng = ring.map(function(c){return [c[1],c[0]];});
+        dimRings.push(latlng);
+        nigeriaRings.push(latlng);
+      }); });
+
+      // Layer 1 — outside dim via multiply (dark teal). Collapses satellite luminance.
+      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#061018', fillOpacity:1.0,
+        color:'transparent', weight:0, interactive:false}).addTo(map);
+
+      // Layer 2 — second multiply pass for a deeper dim. Very dark grey-teal.
+      L.polygon(dimRings, {pane:'nhDarken', fillRule:'evenodd', fillColor:'#0a1822', fillOpacity:.72,
+        color:'transparent', weight:0, interactive:false}).addTo(map);
+
+      // Layer 3 — Nigeria saturation boost. Saturated orange blended via 'saturation' pushes
+      // inside colour saturation higher without changing hue; satellite greens/browns pop.
+      L.polygon(nigeriaRings, {pane:'nhSatBoost', fillColor:'#ff9030', fillOpacity:.55,
+        color:'transparent', weight:0, interactive:false}).addTo(map);
+
+      // Crisp white border
+      var borderRings = polys.map(function(p){ return p[0].map(function(c){return [c[1],c[0]];}); });
+      L.polygon(borderRings, {fill:false, color:'rgba(255,255,255,.28)', weight:1.4,
+        interactive:false}).addTo(map);
+    })
+    .catch(function(e){ console.warn('[contrast] Nigeria GeoJSON load failed', e); });
+})();
 
 // OIL & GAS PORTS
 var energyGroup = L.layerGroup().addTo(map);
