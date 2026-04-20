@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v18</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v19</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',system-ui,sans-serif;margin:0;padding:0;}
@@ -190,6 +190,67 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 .ab-cat-title{flex:1;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.78);}
 .ab-cat-n{font-size:10px;color:rgba(255,255,255,.35);font-variant-numeric:tabular-nums;}
 #layers-panel,#filter-panels{display:none!important;}
+/* v19 — Landing page tokens */
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{
+  --nh-bg:oklch(0.145 0.006 240);
+  --nh-fg:oklch(0.965 0.003 240);
+  --nh-fg-2:oklch(0.78 0.004 240);
+  --nh-fg-3:oklch(0.55 0.005 240);
+  --nh-fg-4:oklch(0.38 0.005 240);
+  --nh-line:oklch(1 0 0 / .07);
+  --nh-line-2:oklch(1 0 0 / .12);
+  --nh-green:#2E7D52;
+  --nh-green-2:#3FA06A;
+}
+/* Landing overlay */
+#nh-landing{position:fixed;inset:0;z-index:9999;background:radial-gradient(1100px 700px at 50% 58%,oklch(0.22 0.02 150 / .35),transparent 70%),radial-gradient(1600px 900px at 50% 50%,oklch(0.15 0.008 240),oklch(0.1 0.006 240) 70%,var(--nh-bg));display:flex;flex-direction:column;overflow:hidden;transform-origin:49.5% 53%;transition:transform 2.2s cubic-bezier(.65,0,.25,1),opacity 1.2s ease 1s,filter 2.2s ease;font-family:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;}
+#nh-landing.enter{transform:scale(14);opacity:0;filter:blur(6px);pointer-events:none;}
+#nh-landing::before{content:'';position:absolute;inset:0;background-image:linear-gradient(oklch(1 0 0 / .025) 1px,transparent 1px),linear-gradient(90deg,oklch(1 0 0 / .025) 1px,transparent 1px);background-size:56px 56px,56px 56px;-webkit-mask-image:radial-gradient(1200px 800px at 50% 55%,black 30%,transparent 80%);mask-image:radial-gradient(1200px 800px at 50% 55%,black 30%,transparent 80%);pointer-events:none;}
+.nh-bracket{position:absolute;width:22px;height:22px;border-color:oklch(1 0 0 / .18);border-style:solid;border-width:0;}
+.nh-bracket.tl{top:20px;left:20px;border-top-width:1px;border-left-width:1px;}
+.nh-bracket.tr{top:20px;right:20px;border-top-width:1px;border-right-width:1px;}
+.nh-bracket.bl{bottom:20px;left:20px;border-bottom-width:1px;border-left-width:1px;}
+.nh-bracket.br{bottom:20px;right:20px;border-bottom-width:1px;border-right-width:1px;}
+#nh-lhead{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:26px 40px;}
+#nh-lhead .logo{display:flex;align-items:center;gap:14px;}
+#nh-lhead .logo img{height:22px;}
+#nh-lhead .logo .sep{width:1px;height:20px;background:oklch(1 0 0 / .15);}
+#nh-lhead .logo .name{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--nh-fg-2);}
+#nh-lhead .meta{display:flex;gap:28px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--nh-fg-4);}
+#nh-lhead .meta span b{color:var(--nh-fg-2);font-weight:500;margin-left:6px;}
+#nh-lbody{position:relative;z-index:2;flex:1;display:grid;grid-template-columns:1fr minmax(520px,720px) 1fr;align-items:center;padding:0 40px 40px;gap:40px;}
+.nh-lside{align-self:end;padding-bottom:80px;}
+.nh-lside.right{text-align:right;}
+.nh-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--nh-green-2);margin-bottom:18px;display:inline-flex;align-items:center;gap:8px;}
+.nh-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--nh-green-2);box-shadow:0 0 10px var(--nh-green-2);animation:nhPulse 2.5s ease-in-out infinite;}
+@keyframes nhPulse{0%,100%{opacity:.55;transform:scale(.9);}50%{opacity:1;transform:scale(1.1);}}
+.nh-lside.right .nh-eyebrow{flex-direction:row-reverse;}
+.nh-title{font-family:'Inter Tight',sans-serif;font-size:clamp(28px,3.2vw,44px);font-weight:300;letter-spacing:-.02em;line-height:1.05;color:var(--nh-fg);margin-bottom:18px;}
+.nh-title b{font-weight:600;color:var(--nh-fg);}
+.nh-sub{font-size:14px;line-height:1.65;color:var(--nh-fg-3);max-width:360px;}
+.nh-lside.right .nh-sub{margin-left:auto;}
+.nh-stats{display:grid;gap:14px;margin-top:22px;}
+.nh-stat{display:flex;align-items:baseline;gap:12px;}
+.nh-lside.right .nh-stat{justify-content:flex-end;}
+.nh-stat .v{font-family:'Inter Tight',sans-serif;font-size:26px;font-weight:500;letter-spacing:-.02em;color:var(--nh-fg);}
+.nh-stat .l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--nh-fg-4);}
+#nh-globe-wrap{position:relative;aspect-ratio:1;width:100%;max-width:640px;justify-self:center;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;}
+#nh-globe{width:100%;aspect-ratio:1;position:relative;}
+#nh-globe > div{width:100%!important;height:100%!important;}
+#nh-enter{appearance:none;font-family:'Inter Tight',sans-serif;font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--nh-fg);background:linear-gradient(180deg,oklch(0.55 0.14 150 / .18),oklch(0.45 0.14 150 / .12));border:.5px solid oklch(0.7 0.14 150 / .5);border-radius:999px;padding:14px 28px 14px 30px;cursor:pointer;display:inline-flex;align-items:center;gap:14px;position:relative;transition:transform .2s,background .2s,border-color .2s,box-shadow .3s;box-shadow:0 0 0 0 oklch(0.7 0.14 150 / .3),0 10px 30px oklch(0.55 0.14 150 / .2);}
+#nh-enter:hover{transform:translateY(-1px);background:linear-gradient(180deg,oklch(0.6 0.15 150 / .28),oklch(0.5 0.15 150 / .2));border-color:oklch(0.75 0.15 150 / .7);box-shadow:0 0 0 6px oklch(0.7 0.14 150 / .14),0 14px 36px oklch(0.55 0.14 150 / .35);}
+#nh-enter .arr{width:28px;height:1px;background:currentColor;position:relative;transition:width .2s;}
+#nh-enter .arr::after{content:'';position:absolute;right:-1px;top:-3px;width:7px;height:7px;border-top:1px solid currentColor;border-right:1px solid currentColor;transform:rotate(45deg);}
+#nh-enter:hover .arr{width:36px;}
+.nh-cta-note{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--nh-fg-4);margin-top:6px;}
+#nh-lfoot{position:absolute;bottom:18px;left:0;right:0;display:flex;justify-content:space-between;padding:0 40px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--nh-fg-4);z-index:2;}
+#map-wrap{opacity:0;transition:opacity .7s ease .5s;}
+body.nh-entered #map-wrap{opacity:1;}
+body:not(.nh-entered) #map-wrap{pointer-events:none;}
+@media (max-width:1100px){#nh-lbody{grid-template-columns:1fr;}.nh-lside{display:none;}}
+@media (max-width:640px){#nh-lhead{padding:20px;}#nh-lhead .meta{display:none;}#nh-lfoot{padding:0 20px;font-size:9px;}#nh-globe-wrap{max-width:86vw;}}
+
 /* v18 — Nigeria vs neighbours contrast (satellite basemap) */
 .leaflet-pane.nh-dim-pane{ mix-blend-mode: multiply; pointer-events: none; }
 .leaflet-pane.nh-darken-pane{ mix-blend-mode: multiply; pointer-events: none; }
@@ -197,6 +258,51 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 </style>
 </head>
 <body>
+<div id="nh-landing">
+  <span class="nh-bracket tl"></span><span class="nh-bracket tr"></span><span class="nh-bracket bl"></span><span class="nh-bracket br"></span>
+  <div id="nh-lhead">
+    <div class="logo">
+      <img src="https://cdn.prod.website-files.com/6978550a664b785d36028c0b/699992656dd2d7f4c1325884_Norhaven_UAE_Primary_Logo_Green.svg" alt="Norhaven"/>
+      <div class="sep"></div>
+      <div class="name">Deal Intelligence</div>
+    </div>
+    <div class="meta">
+      <span>Coverage <b>Nigeria</b></span>
+      <span>Network <b id="nh-assets-count">Loading&hellip;</b></span>
+      <span>Session <b id="nh-sess">NH-&mdash;&mdash;</b></span>
+    </div>
+  </div>
+  <div id="nh-lbody">
+    <div class="nh-lside">
+      <div class="nh-eyebrow">Sovereign Wealth Edition</div>
+      <div class="nh-title">Private access to <b>Nigeria's</b> real-economy asset network.</div>
+      <div class="nh-sub">A curated intelligence layer across minerals, energy, infrastructure and industrial corridors &mdash; designed for sovereign and institutional capital allocators.</div>
+      <div class="nh-stats">
+        <div class="nh-stat"><div class="v">$420B+</div><div class="l">Addressable Pipeline</div></div>
+        <div class="nh-stat"><div class="v">11</div><div class="l">Sector Layers</div></div>
+      </div>
+    </div>
+    <div id="nh-globe-wrap">
+      <div id="nh-globe"><div id="nh-globe-3d" style="width:100%;height:100%;"></div></div>
+      <button id="nh-enter" type="button">Enter Network <span class="arr"></span></button>
+      <div class="nh-cta-note">Press Enter or Space</div>
+    </div>
+    <div class="nh-lside right">
+      <div class="nh-eyebrow">Norhaven &middot; Abu Dhabi</div>
+      <div class="nh-title">Built for patient, <b>strategic</b> capital.</div>
+      <div class="nh-sub">From Itakpe iron to Agbabu bitumen, from Lagos-Ibadan rail to the Kogi Industrial Corridor &mdash; every asset mapped, de-risked, ranked.</div>
+      <div class="nh-stats">
+        <div class="nh-stat"><div class="v" id="nh-mapped-count">&mdash;</div><div class="l">Mapped Assets</div></div>
+        <div class="nh-stat"><div class="v">118</div><div class="l">Mineral Sites</div></div>
+      </div>
+    </div>
+  </div>
+  <div id="nh-lfoot">
+    <span>Confidential &middot; SWF Distribution</span>
+    <span id="nh-clock">&mdash;&mdash;:&mdash;&mdash;:&mdash;&mdash; UTC</span>
+    <span>v18 &middot; 2026</span>
+  </div>
+</div>
 <div id="map-wrap">
 <div id="ngm"></div>
 <div id="header">
@@ -1259,6 +1365,168 @@ function toggleExplore(){
 
 renderLayers();
 
+</script>
+<script src="https://unpkg.com/globe.gl"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script>
+/* ===== Landing page: globe + Enter-Network transition + logo return ===== */
+(function(){
+  // Session id + UTC clock
+  var sid = Math.random().toString(36).slice(2,7).toUpperCase();
+  var sessEl = document.getElementById('nh-sess');
+  if(sessEl) sessEl.textContent = 'NH-' + sid;
+  function tick(){
+    var d = new Date();
+    var hh = String(d.getUTCHours()).padStart(2,'0');
+    var mm = String(d.getUTCMinutes()).padStart(2,'0');
+    var ss = String(d.getUTCSeconds()).padStart(2,'0');
+    var el = document.getElementById('nh-clock');
+    if(el) el.textContent = hh+':'+mm+':'+ss+' UTC';
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Populate asset counts once main script has defined allAssets
+  function updateCounts(){
+    try {
+      if(typeof allAssets !== 'undefined' && allAssets && allAssets.length){
+        var c1 = document.getElementById('nh-assets-count');
+        var c2 = document.getElementById('nh-mapped-count');
+        if(c1) c1.textContent = allAssets.length + ' Assets';
+        if(c2) c2.textContent = allAssets.length;
+      }
+    } catch(e){}
+  }
+  window.addEventListener('load', function(){ setTimeout(updateCounts, 200); });
+  setTimeout(updateCounts, 400); setTimeout(updateCounts, 1200);
+
+  // Enter button → scale+fade transition into the map
+  var landing = document.getElementById('nh-landing');
+  var btn = document.getElementById('nh-enter');
+  var logoImg = document.querySelector('#header .logo-area img');
+  if(logoImg){
+    logoImg.style.cursor = 'pointer';
+    logoImg.title = 'Back to start';
+    logoImg.addEventListener('click', function(){
+      if(!landing) return;
+      document.body.classList.remove('nh-entered');
+      landing.classList.remove('enter');
+      landing.style.display = '';
+    });
+  }
+  if(btn){
+    btn.addEventListener('click', function(){
+      document.body.classList.add('nh-entered');
+      landing.classList.add('enter');
+      setTimeout(function(){
+        try { if(typeof map !== 'undefined' && map.invalidateSize) map.invalidateSize(); } catch(e){}
+      }, 900);
+    });
+  }
+  window.addEventListener('keydown', function(e){
+    if((e.key==='Enter' || e.key===' ') && landing && !landing.classList.contains('enter')){
+      e.preventDefault(); if(btn) btn.click();
+    }
+  });
+
+  // Globe init
+  function initGlobe(){
+    var el = document.getElementById('nh-globe-3d');
+    if(!el || typeof Globe === 'undefined'){ return setTimeout(initGlobe, 100); }
+    var cities = [
+      {name:'LAGOS',lat:6.52,lng:3.38,size:1.3,nigeria:true},
+      {name:'ABUJA',lat:9.08,lng:7.48,size:1.2,nigeria:true},
+      {name:'PORT HARCOURT',lat:4.81,lng:7.04,size:1.0,nigeria:true},
+      {name:'KANO',lat:12.00,lng:8.52,size:0.9,nigeria:true},
+      {name:'LONDON',lat:51.50,lng:-0.12,size:0.8},
+      {name:'DUBAI',lat:25.20,lng:55.27,size:0.9},
+      {name:'ABU DHABI',lat:24.47,lng:54.37,size:1.0},
+      {name:'NEW YORK',lat:40.71,lng:-74.00,size:0.8},
+      {name:'SINGAPORE',lat:1.35,lng:103.82,size:0.7},
+      {name:'HONG KONG',lat:22.32,lng:114.17,size:0.7},
+      {name:'RIYADH',lat:24.71,lng:46.67,size:0.7},
+      {name:'CAIRO',lat:30.04,lng:31.23,size:0.7},
+      {name:'JOHANNESBURG',lat:-26.20,lng:28.04,size:0.7},
+      {name:'MUMBAI',lat:19.07,lng:72.87,size:0.7},
+      {name:'BEIJING',lat:39.90,lng:116.40,size:0.7},
+      {name:'TOKYO',lat:35.68,lng:139.69,size:0.7},
+      {name:'FRANKFURT',lat:50.11,lng:8.68,size:0.6},
+      {name:'PARIS',lat:48.85,lng:2.35,size:0.6},
+      {name:'ZURICH',lat:47.37,lng:8.54,size:0.6}
+    ];
+    var arcs = [];
+    var hubs = [cities[0], cities[1], cities[6]]; // Lagos, Abuja, Abu Dhabi
+    cities.forEach(function(c){
+      hubs.forEach(function(h){
+        if(c === h) return;
+        arcs.push({startLat:h.lat,startLng:h.lng,endLat:c.lat,endLng:c.lng});
+      });
+    });
+    var g = Globe()
+      .backgroundColor('rgba(0,0,0,0)')
+      .showAtmosphere(true)
+      .atmosphereColor('#3FA06A')
+      .atmosphereAltitude(0.18)
+      .showGraticules(true)
+      .polygonsData([])
+      .polygonCapColor(function(d){ return d && d.properties && d.properties.ISO_A3 === 'NGA' ? 'rgba(63,160,106,0.55)' : 'rgba(80,110,100,0.18)'; })
+      .polygonSideColor(function(){ return 'rgba(0,0,0,0)'; })
+      .polygonStrokeColor(function(d){ return d && d.properties && d.properties.ISO_A3 === 'NGA' ? 'rgba(123,216,168,0.9)' : 'rgba(150,180,170,0.35)'; })
+      .polygonAltitude(0.005)
+      .pointsData(cities)
+      .pointLat('lat').pointLng('lng')
+      .pointColor(function(d){ return d.nigeria ? '#7BD8A8' : '#9fd3b6'; })
+      .pointAltitude(0.01)
+      .pointRadius(function(d){ return d.size * 0.35; })
+      .labelsData(cities)
+      .labelLat('lat').labelLng('lng').labelText('name')
+      .labelSize(function(d){ return d.nigeria ? 0.7 : 0.5; })
+      .labelColor(function(d){ return d.nigeria ? 'rgba(180,240,210,0.95)' : 'rgba(200,210,220,0.55)'; })
+      .labelDotRadius(0)
+      .labelResolution(2)
+      .labelAltitude(0.012)
+      .arcsData(arcs)
+      .arcColor(function(){ return ['rgba(63,160,106,0.15)','rgba(123,216,168,0.9)']; })
+      .arcStroke(0.35)
+      .arcDashLength(0.5)
+      .arcDashGap(1.2)
+      .arcDashAnimateTime(3500)
+      .arcAltitudeAutoScale(0.4)
+      (el);
+    try {
+      var mesh = g.globeMaterial();
+      mesh.color.set('#0d1520');
+      mesh.emissive.set('#0a1a14');
+      mesh.emissiveIntensity = 0.25;
+    } catch(e){}
+    function resize(){
+      var r = el.getBoundingClientRect();
+      g.width(r.width); g.height(r.height);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    g.pointOfView({lat:9,lng:8,altitude:2.2}, 0);
+    var ctrl = g.controls();
+    ctrl.autoRotate = true;
+    ctrl.autoRotateSpeed = 0.6;
+    ctrl.enableZoom = false;
+    window.__nhGlobe = g;
+
+    // Load country polygons for Nigeria highlight
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json')
+      .then(function(r){ return r.json(); })
+      .then(function(topo){
+        if(!window.topojson) return;
+        try {
+          var geo = window.topojson.feature(topo, topo.objects.countries);
+          geo.features.forEach(function(f){
+            if(String(f.id) === '566'){ f.properties = f.properties || {}; f.properties.ISO_A3 = 'NGA'; }
+          });
+          g.polygonsData(geo.features);
+        } catch(e){ console.warn('[landing] poly apply failed', e); }
+      }).catch(function(){});
+  }
+  initGlobe();
+})();
 </script>
 </body>
 </html>
