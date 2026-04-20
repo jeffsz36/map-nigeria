@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v28</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v29</title>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
 <link rel="preconnect" href="https://unpkg.com" crossorigin/>
@@ -513,11 +513,17 @@ map.on('baselayerchange', function(e){ applyBasemapStyle(e.name); });
     return p;
   }
   // Tile z-index is 200, overlay is 400 — place contrast panes between them.
-  mkPane('nhDim',  'nh-dim-pane',  395); // outside dim via multiply
-  mkPane('nhFill', 'nh-fill-pane', 396); // Nigeria: solid light-grey fill (dark mode only)
+  mkPane('nhDim',  'nh-dim-pane',  395);
+  mkPane('nhFill', 'nh-fill-pane', 396);
+
+  // IMMEDIATE hardcoded Nigeria bounding-box fill — shows instantly before GeoJSON loads,
+  // proving the pane works. Replaced by exact shape once fetch completes.
+  var nhFallbackRect = L.rectangle([[4.2, 2.7],[13.9, 14.7]], {pane:'nhFill', fillColor:'#c6d0dc', fillOpacity:.88,
+    color:'rgba(255,255,255,.7)', weight:1.5, interactive:false}).addTo(map);
+  console.log('[contrast] immediate fallback rect added to nhFill pane');
 
   fetch('https://cdn.jsdelivr.net/npm/world-geojson@0.0.5/countries/nigeria.json')
-    .catch(function(){ return fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/NGA.geo.json'); })
+    .catch(function(){ console.warn('[contrast] primary URL failed, trying fallback'); return fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/NGA.geo.json'); })
     .then(function(r){ return r.json(); })
     .then(function(gj){
       var feats = gj.features || [gj];
@@ -535,8 +541,11 @@ map.on('baselayerchange', function(e){ applyBasemapStyle(e.name); });
         nigeriaRings.push(latlng);
       }); });
 
-      // Outside dim — plain dark polygon, normal blending. fillOpacity .40 on near-black
-      // darkens neighbours noticeably without hiding labels.
+      console.log('[contrast] Nigeria GeoJSON loaded, rings:', nigeriaRings.length, 'polys:', polys.length);
+      // Remove fallback rectangle now that we have the real shape
+      if(nhFallbackRect){ map.removeLayer(nhFallbackRect); nhFallbackRect=null; }
+
+      // Outside dim — plain dark polygon
       L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#050912', fillOpacity:.45,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
