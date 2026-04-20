@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v20</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v21</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',system-ui,sans-serif;margin:0;padding:0;}
@@ -235,10 +235,10 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 .nh-lside.right .nh-stat{justify-content:flex-end;}
 .nh-stat .v{font-family:'Inter Tight',sans-serif;font-size:26px;font-weight:500;letter-spacing:-.02em;color:var(--nh-fg);}
 .nh-stat .l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--nh-fg-4);}
-#nh-globe-wrap{position:relative;aspect-ratio:1;width:100%;max-width:min(560px,52vh);justify-self:center;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
+#nh-globe-wrap{position:relative;justify-self:center;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
 .nh-lside{padding-bottom:48px;}
-#nh-globe{width:100%;aspect-ratio:1;position:relative;}
-#nh-globe > div{width:100%!important;height:100%!important;}
+#nh-globe{position:relative;flex-shrink:0;width:min(520px,54vh,80vw);height:min(520px,54vh,80vw);}
+#nh-globe > div,#nh-globe-3d{width:100%!important;height:100%!important;}
 #nh-enter{appearance:none;font-family:'Inter Tight',sans-serif;font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--nh-fg);background:linear-gradient(180deg,oklch(0.55 0.14 150 / .18),oklch(0.45 0.14 150 / .12));border:.5px solid oklch(0.7 0.14 150 / .5);border-radius:999px;padding:14px 28px 14px 30px;cursor:pointer;display:inline-flex;align-items:center;gap:14px;position:relative;transition:transform .2s,background .2s,border-color .2s,box-shadow .3s;box-shadow:0 0 0 0 oklch(0.7 0.14 150 / .3),0 10px 30px oklch(0.55 0.14 150 / .2);}
 #nh-enter:hover{transform:translateY(-1px);background:linear-gradient(180deg,oklch(0.6 0.15 150 / .28),oklch(0.5 0.15 150 / .2));border-color:oklch(0.75 0.15 150 / .7);box-shadow:0 0 0 6px oklch(0.7 0.14 150 / .14),0 14px 36px oklch(0.55 0.14 150 / .35);}
 #nh-enter .arr{width:28px;height:1px;background:currentColor;position:relative;transition:width .2s;}
@@ -1576,10 +1576,17 @@ renderLayers();
     } catch(e){}
     function resize(){
       var r = el.getBoundingClientRect();
-      g.width(r.width); g.height(r.height);
+      if(r.width > 0 && r.height > 0){ g.width(r.width); g.height(r.height); }
     }
     resize();
+    // ResizeObserver keeps the canvas square as the element's size changes (layout, viewport).
+    // Also schedule a couple of delayed re-measures in case initial layout hadn't settled.
+    if(typeof ResizeObserver !== 'undefined'){
+      new ResizeObserver(resize).observe(el);
+    }
     window.addEventListener('resize', resize);
+    setTimeout(resize, 120);
+    setTimeout(resize, 500);
     g.pointOfView({lat:9,lng:8,altitude:2.2}, 0);
     var ctrl = g.controls();
     ctrl.autoRotate = true;
