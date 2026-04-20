@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v24</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v25</title>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
 <link rel="preconnect" href="https://unpkg.com" crossorigin/>
@@ -473,17 +473,27 @@ var AB_CATS = [{"key": "all", "label": "All", "color": "rgba(255,255,255,.5)"}, 
 var CAT_COLORS = [{"key": "utilities", "label": "Power & Utilities", "color": "#5E5CE6"}, {"key": "transport", "label": "Transportation", "color": "#32ADE6"}, {"key": "agri", "label": "Agri-Exports", "color": "#30D158"}, {"key": "industrial", "label": "Industrial Zones", "color": "#22CC88"}, {"key": "emergency", "label": "Emergency Response", "color": "#FF3B30"}, {"key": "proposed", "label": "Lokoja Node", "color": "#FFD60A"}];
 
 var map = L.map('ngm',{zoomControl:true,minZoom:6,maxBounds:[[2.5,1.5],[15,15.5]],maxBoundsViscosity:0.9}).setView([9,8],6);
-var darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',{subdomains:'abcd',maxZoom:19,attribution:'&copy; OpenStreetMap &copy; CARTO'});
-var satLayer  = L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,attribution:'&copy; Google'});
-var satLabels = L.tileLayer('https://mt{s}.google.com/vt/lyrs=h&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,opacity:.75});
+// Labels pane — sits ABOVE the contrast overlays so country/city names remain
+// readable even where the outside dim multiply covers the tiles.
+map.createPane('nhLabels');
+map.getPane('nhLabels').style.zIndex = 398;
+map.getPane('nhLabels').style.pointerEvents = 'none';
+
+var darkBase  = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}@2x.png',{subdomains:'abcd',maxZoom:19,attribution:'&copy; OpenStreetMap &copy; CARTO'});
+var darkLabel = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}@2x.png',{subdomains:'abcd',maxZoom:19,pane:'nhLabels'});
+var satBase   = L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,attribution:'&copy; Google'});
+var satLabel  = L.tileLayer('https://mt{s}.google.com/vt/lyrs=h&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,pane:'nhLabels'});
+
+// Group each basemap into a LayerGroup (base + matching labels) so the control
+// adds/removes both together.
+var darkLayer = L.layerGroup([darkBase, darkLabel]);
+var satLayer  = L.layerGroup([satBase,  satLabel]);
 darkLayer.addTo(map);
 document.body.classList.add('basemap-dark');
 L.control.layers({'Dark':darkLayer,'Satellite':satLayer},null,{position:'topleft',collapsed:true}).addTo(map);
 map.on('baselayerchange', function(e){
   document.body.classList.toggle('basemap-dark', e.name==='Dark');
   document.body.classList.toggle('basemap-sat',  e.name==='Satellite');
-  if(e.name==='Satellite' && !map.hasLayer(satLabels)) satLabels.addTo(map);
-  else if(e.name==='Dark' && map.hasLayer(satLabels)) map.removeLayer(satLabels);
 });
 
 /* ===== Nigeria vs neighbours contrast overlay =====
