@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v23</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v24</title>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
+<link rel="preconnect" href="https://unpkg.com" crossorigin/>
+<link rel="preconnect" href="https://basemaps.cartocdn.com" crossorigin/>
+<link rel="preconnect" href="https://a.basemaps.cartocdn.com" crossorigin/>
+<link rel="preconnect" href="https://b.basemaps.cartocdn.com" crossorigin/>
+<link rel="dns-prefetch" href="https://fonts.googleapis.com"/>
+<link rel="dns-prefetch" href="https://fonts.gstatic.com"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',system-ui,sans-serif;margin:0;padding:0;}
@@ -327,12 +335,13 @@ html,body{background:var(--nh-bg)!important;color:var(--nh-fg);}
 ::-webkit-scrollbar-thumb:hover{background:oklch(1 0 0 / .15);}
 ::selection{background:oklch(0.55 0.14 150 / .45);color:var(--nh-fg);}
 
-/* v23 — Per-basemap tile filter + Nigeria contrast overlay */
-body.basemap-dark .leaflet-tile-pane{ filter: brightness(1.55) saturate(1.0) contrast(1.08); }
+/* v24 — Per-basemap tile filter + Nigeria contrast overlay */
+/* Dark: keep tiles ~native so neighbours stay near-black; brighten only Nigeria. */
+body.basemap-dark .leaflet-tile-pane{ filter: brightness(1.08) saturate(1.0) contrast(1.05); }
 body.basemap-sat  .leaflet-tile-pane{ filter: brightness(1.0)  saturate(1.0) contrast(1.0); }
 .leaflet-pane.nh-dim-pane{ mix-blend-mode: multiply; pointer-events: none; }
-.leaflet-pane.nh-bright-pane{ mix-blend-mode: screen; pointer-events: none; }
-.leaflet-pane.nh-satboost-pane{ mix-blend-mode: saturation; pointer-events: none; }
+.leaflet-pane.nh-bright-pane{ mix-blend-mode: screen; pointer-events: none; will-change: opacity; }
+.leaflet-pane.nh-brightboost-pane{ mix-blend-mode: overlay; pointer-events: none; will-change: opacity; }
 /* Layer switcher styled to match dark UI */
 .leaflet-control-layers{
   background:oklch(0.205 0.008 240 / .94)!important;
@@ -490,9 +499,9 @@ map.on('baselayerchange', function(e){
     return p;
   }
   // Tile z-index is 200, overlay is 400 — place contrast panes between them.
-  mkPane('nhDim',      'nh-dim-pane',      395); // outside dim via multiply
-  mkPane('nhBright',   'nh-bright-pane',   396); // inside brighten via screen
-  mkPane('nhSatBoost', 'nh-satboost-pane', 397); // inside saturation boost
+  mkPane('nhDim',         'nh-dim-pane',         395); // outside dim via multiply
+  mkPane('nhBright',      'nh-bright-pane',      396); // Nigeria: screen brighten
+  mkPane('nhBrightBoost', 'nh-brightboost-pane', 397); // Nigeria: overlay boost contrast
 
   fetch('https://cdn.jsdelivr.net/npm/world-geojson@0.0.5/countries/nigeria.json')
     .catch(function(){ return fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/NGA.geo.json'); })
@@ -513,22 +522,21 @@ map.on('baselayerchange', function(e){
         nigeriaRings.push(latlng);
       }); });
 
-      // Outside dim via multiply — dark grey-blue. fillOpacity tuned so neighbour country
-      // names remain readable on the CARTO-dark base but Nigeria clearly stands out.
-      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#0a1220', fillOpacity:.80,
+      // Outside dim via multiply — dark grey-blue at high opacity: neighbours go nearly black.
+      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#020814', fillOpacity:.92,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
       // Inside brighten via screen — warm off-white lifts Nigeria substantially.
-      L.polygon(nigeriaRings, {pane:'nhBright', fillColor:'#fff1c2', fillOpacity:.28,
+      L.polygon(nigeriaRings, {pane:'nhBright', fillColor:'#fff4d2', fillOpacity:.55,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
-      // Inside saturation boost — nudges colour pop inside Nigeria against desaturated outside.
-      L.polygon(nigeriaRings, {pane:'nhSatBoost', fillColor:'#ff9c3b', fillOpacity:.40,
+      // Inside overlay boost — overlay blend further increases Nigeria mid-tones & contrast.
+      L.polygon(nigeriaRings, {pane:'nhBrightBoost', fillColor:'#ffe7a0', fillOpacity:.55,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
       // Crisp white border
       var borderRings = polys.map(function(p){ return p[0].map(function(c){return [c[1],c[0]];}); });
-      L.polygon(borderRings, {fill:false, color:'rgba(255,255,255,.45)', weight:1.4,
+      L.polygon(borderRings, {fill:false, color:'rgba(255,255,255,.55)', weight:1.6,
         interactive:false}).addTo(map);
     })
     .catch(function(e){ console.warn('[contrast] Nigeria GeoJSON load failed', e); });
@@ -1529,10 +1537,10 @@ renderLayers();
     }
   });
 
-  // Globe init
+  // Globe init — deferred to idle so markers/map render first
   function initGlobe(){
     var el = document.getElementById('nh-globe-3d');
-    if(!el || typeof Globe === 'undefined'){ return setTimeout(initGlobe, 100); }
+    if(!el || typeof Globe === 'undefined'){ return setTimeout(initGlobe, 120); }
     var cities = [
       {name:'LAGOS',lat:6.52,lng:3.38,size:1.3,nigeria:true},
       {name:'ABUJA',lat:9.08,lng:7.48,size:1.2,nigeria:true},
@@ -1627,9 +1635,8 @@ renderLayers();
     ctrl.enableZoom = false;
     window.__nhGlobe = g;
 
-    // Load higher-detail country polygons for crisp borders (50m vs 110m)
-    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json')
-      .catch(function(){ return fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json'); })
+    // 110m country polygons (smaller payload than 50m, ~100KB vs ~900KB). Still crisp at globe display size.
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json')
       .then(function(r){ return r.json(); })
       .then(function(topo){
         if(!window.topojson) return;
@@ -1642,7 +1649,9 @@ renderLayers();
         } catch(e){ console.warn('[landing] poly apply failed', e); }
       }).catch(function(){});
   }
-  initGlobe();
+  // Kick off globe init asynchronously so it doesn't block the landing paint.
+  if('requestIdleCallback' in window){ requestIdleCallback(initGlobe, {timeout: 400}); }
+  else { setTimeout(initGlobe, 50); }
 })();
 </script>
 </body>
