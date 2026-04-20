@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v26</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v27</title>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
 <link rel="preconnect" href="https://unpkg.com" crossorigin/>
@@ -497,7 +497,7 @@ function applyBasemapStyle(name){
   if(window.__nhFill && window.__nhFill.setStyle){
     // Dark: solid-ish light grey fill paints Nigeria distinct from the dark base.
     // Satellite: near-transparent so the satellite imagery remains visible inside Nigeria.
-    window.__nhFill.setStyle({fillOpacity: name==='Dark' ? 0.80 : 0.05});
+    window.__nhFill.setStyle({fillOpacity: name==='Dark' ? 0.92 : 0.05});
   }
 }
 map.on('baselayerchange', function(e){ applyBasemapStyle(e.name); });
@@ -537,19 +537,18 @@ map.on('baselayerchange', function(e){ applyBasemapStyle(e.name); });
         nigeriaRings.push(latlng);
       }); });
 
-      // Outside dim via multiply — moderate darken, neighbours stay readable (not near-black).
-      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#0c1422', fillOpacity:.55,
+      // Outside dim via multiply — light touch so neighbours look "a notch darker than native"
+      // rather than near-black. Labels (country, city) remain fully readable.
+      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#0c1422', fillOpacity:.30,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
-      // Nigeria SOLID light-grey fill. This literally paints Nigeria a distinct lighter colour
-      // (like a subway map highlighting the focal country). Stored so the basemap switcher can
-      // update its opacity: opaque-ish on Dark, near-transparent on Satellite.
-      window.__nhFill = L.polygon(nigeriaRings, {pane:'nhFill', fillColor:'#a8b3c2', fillOpacity:.80,
+      // Nigeria SOLID light-grey fill. High opacity so it literally paints the country light.
+      window.__nhFill = L.polygon(nigeriaRings, {pane:'nhFill', fillColor:'#c6d0dc', fillOpacity:.92,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
-      // Crisp white border above the fill.
+      // White border on top of the fill.
       var borderRings = polys.map(function(p){ return p[0].map(function(c){return [c[1],c[0]];}); });
-      L.polygon(borderRings, {pane:'nhFill', fill:false, color:'rgba(255,255,255,.6)', weight:1.6,
+      L.polygon(borderRings, {pane:'nhFill', fill:false, color:'rgba(255,255,255,.85)', weight:2,
         interactive:false}).addTo(map);
     })
     .catch(function(e){ console.warn('[contrast] Nigeria GeoJSON load failed', e); });
