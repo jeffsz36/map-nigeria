@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v27</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v28</title>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
 <link rel="preconnect" href="https://unpkg.com" crossorigin/>
@@ -335,12 +335,10 @@ html,body{background:var(--nh-bg)!important;color:var(--nh-fg);}
 ::-webkit-scrollbar-thumb:hover{background:oklch(1 0 0 / .15);}
 ::selection{background:oklch(0.55 0.14 150 / .45);color:var(--nh-fg);}
 
-/* v26 — Per-basemap tile filter + Nigeria contrast overlay */
-body.basemap-dark .leaflet-tile-pane{ filter: brightness(1.0) saturate(1.0) contrast(1.0); }
-body.basemap-sat  .leaflet-tile-pane{ filter: brightness(1.0) saturate(1.0) contrast(1.0); }
-.leaflet-pane.nh-dim-pane{ mix-blend-mode: multiply; pointer-events: none; }
-/* Nigeria fill uses NORMAL blending (not mix-blend) so it literally paints the country as a
-   light-grey shape. Opacity is toggled per basemap in JS: solid-ish on Dark, transparent on Satellite. */
+/* v28 — Nigeria contrast overlay. No mix-blend modes, no filters — just plain polygons.
+   nhDim paints a semi-transparent dark rectangle over everything except Nigeria (fillRule evenodd
+   with world ring + Nigeria holes). nhFill paints a solid light grey polygon inside Nigeria. */
+.leaflet-pane.nh-dim-pane,
 .leaflet-pane.nh-fill-pane{ pointer-events: none; }
 /* Layer switcher styled to match dark UI */
 .leaflet-control-layers{
@@ -537,12 +535,13 @@ map.on('baselayerchange', function(e){ applyBasemapStyle(e.name); });
         nigeriaRings.push(latlng);
       }); });
 
-      // Outside dim via multiply — light touch so neighbours look "a notch darker than native"
-      // rather than near-black. Labels (country, city) remain fully readable.
-      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#0c1422', fillOpacity:.30,
+      // Outside dim — plain dark polygon, normal blending. fillOpacity .40 on near-black
+      // darkens neighbours noticeably without hiding labels.
+      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#050912', fillOpacity:.45,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
-      // Nigeria SOLID light-grey fill. High opacity so it literally paints the country light.
+      // Nigeria SOLID light-grey fill — normal blending. fillOpacity .92 so it paints the
+      // country distinctly light over whatever basemap is active.
       window.__nhFill = L.polygon(nigeriaRings, {pane:'nhFill', fillColor:'#c6d0dc', fillOpacity:.92,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
