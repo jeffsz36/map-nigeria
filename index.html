@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v21</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v22</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',system-ui,sans-serif;margin:0;padding:0;}
@@ -235,9 +235,9 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 .nh-lside.right .nh-stat{justify-content:flex-end;}
 .nh-stat .v{font-family:'Inter Tight',sans-serif;font-size:26px;font-weight:500;letter-spacing:-.02em;color:var(--nh-fg);}
 .nh-stat .l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--nh-fg-4);}
-#nh-globe-wrap{position:relative;justify-self:center;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
-.nh-lside{padding-bottom:48px;}
-#nh-globe{position:relative;flex-shrink:0;width:min(520px,54vh,80vw);height:min(520px,54vh,80vw);}
+#nh-globe-wrap{position:relative;justify-self:center;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;}
+.nh-lside{padding-bottom:40px;}
+#nh-globe{position:relative;flex-shrink:0;width:min(560px,58vh,78vw);height:min(560px,58vh,78vw);}
 #nh-globe > div,#nh-globe-3d{width:100%!important;height:100%!important;}
 #nh-enter{appearance:none;font-family:'Inter Tight',sans-serif;font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--nh-fg);background:linear-gradient(180deg,oklch(0.55 0.14 150 / .18),oklch(0.45 0.14 150 / .12));border:.5px solid oklch(0.7 0.14 150 / .5);border-radius:999px;padding:14px 28px 14px 30px;cursor:pointer;display:inline-flex;align-items:center;gap:14px;position:relative;transition:transform .2s,background .2s,border-color .2s,box-shadow .3s;box-shadow:0 0 0 0 oklch(0.7 0.14 150 / .3),0 10px 30px oklch(0.55 0.14 150 / .2);}
 #nh-enter:hover{transform:translateY(-1px);background:linear-gradient(180deg,oklch(0.6 0.15 150 / .28),oklch(0.5 0.15 150 / .2));border-color:oklch(0.75 0.15 150 / .7);box-shadow:0 0 0 6px oklch(0.7 0.14 150 / .14),0 14px 36px oklch(0.55 0.14 150 / .35);}
@@ -327,10 +327,10 @@ html,body{background:var(--nh-bg)!important;color:var(--nh-fg);}
 ::-webkit-scrollbar-thumb:hover{background:oklch(1 0 0 / .15);}
 ::selection{background:oklch(0.55 0.14 150 / .45);color:var(--nh-fg);}
 
-/* v18 — Nigeria vs neighbours contrast (satellite basemap) */
+/* v22 — Nigeria vs neighbours contrast (CARTO dark basemap) */
+.leaflet-tile-pane{ filter: brightness(1.55) saturate(1.0) contrast(1.08); }
 .leaflet-pane.nh-dim-pane{ mix-blend-mode: multiply; pointer-events: none; }
-.leaflet-pane.nh-darken-pane{ mix-blend-mode: multiply; pointer-events: none; }
-.leaflet-pane.nh-satboost-pane{ mix-blend-mode: saturation; pointer-events: none; }
+.leaflet-pane.nh-bright-pane{ mix-blend-mode: screen; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -449,8 +449,7 @@ var AB_CATS = [{"key": "all", "label": "All", "color": "rgba(255,255,255,.5)"}, 
 var CAT_COLORS = [{"key": "utilities", "label": "Power & Utilities", "color": "#5E5CE6"}, {"key": "transport", "label": "Transportation", "color": "#32ADE6"}, {"key": "agri", "label": "Agri-Exports", "color": "#30D158"}, {"key": "industrial", "label": "Industrial Zones", "color": "#22CC88"}, {"key": "emergency", "label": "Emergency Response", "color": "#FF3B30"}, {"key": "proposed", "label": "Lokoja Node", "color": "#FFD60A"}];
 
 var map = L.map('ngm',{zoomControl:true,minZoom:6,maxBounds:[[2.5,1.5],[15,15.5]],maxBoundsViscosity:0.9}).setView([9,8],6);
-L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,attribution:'&copy; Google'}).addTo(map);
-L.tileLayer('https://mt{s}.google.com/vt/lyrs=h&x={x}&y={y}&z={z}',{subdomains:'0123',maxZoom:22,opacity:.75}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',{subdomains:'abcd',maxZoom:19,attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
 
 /* ===== Nigeria vs neighbours contrast overlay =====
    Strategy: Nigeria stays full-colour satellite; everything outside is multiplied toward
@@ -465,9 +464,8 @@ L.tileLayer('https://mt{s}.google.com/vt/lyrs=h&x={x}&y={y}&z={z}',{subdomains:'
     return p;
   }
   // Tile z-index is 200, overlay is 400 — place contrast panes between them.
-  mkPane('nhDim',      'nh-dim-pane',      395); // primary dim — multiply dark teal outside
-  mkPane('nhDarken',   'nh-darken-pane',   396); // stacked second multiply for stronger effect
-  mkPane('nhSatBoost', 'nh-satboost-pane', 397); // saturation blend inside Nigeria
+  mkPane('nhDim',    'nh-dim-pane',    395); // subtle multiply dim outside Nigeria
+  mkPane('nhBright', 'nh-bright-pane', 396); // subtle screen brighten inside Nigeria
 
   fetch('https://cdn.jsdelivr.net/npm/world-geojson@0.0.5/countries/nigeria.json')
     .catch(function(){ return fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/NGA.geo.json'); })
@@ -488,22 +486,19 @@ L.tileLayer('https://mt{s}.google.com/vt/lyrs=h&x={x}&y={y}&z={z}',{subdomains:'
         nigeriaRings.push(latlng);
       }); });
 
-      // Layer 1 — outside dim via multiply (dark teal). Collapses satellite luminance.
-      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#061018', fillOpacity:1.0,
+      // Subtle dim outside Nigeria via multiply — dark grey-blue, tuned so country labels
+      // and borders remain readable (matches reference design).
+      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#1a2330', fillOpacity:.55,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
-      // Layer 2 — second multiply pass for a deeper dim. Very dark grey-teal.
-      L.polygon(dimRings, {pane:'nhDarken', fillRule:'evenodd', fillColor:'#0a1822', fillOpacity:.72,
-        color:'transparent', weight:0, interactive:false}).addTo(map);
-
-      // Layer 3 — Nigeria saturation boost. Saturated orange blended via 'saturation' pushes
-      // inside colour saturation higher without changing hue; satellite greens/browns pop.
-      L.polygon(nigeriaRings, {pane:'nhSatBoost', fillColor:'#ff9030', fillOpacity:.55,
+      // Subtle brighten inside Nigeria via screen — soft warm-white lifts Nigeria a notch
+      // without blowing out detail.
+      L.polygon(nigeriaRings, {pane:'nhBright', fillColor:'#f4ead8', fillOpacity:.12,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
       // Crisp white border
       var borderRings = polys.map(function(p){ return p[0].map(function(c){return [c[1],c[0]];}); });
-      L.polygon(borderRings, {fill:false, color:'rgba(255,255,255,.28)', weight:1.4,
+      L.polygon(borderRings, {fill:false, color:'rgba(255,255,255,.35)', weight:1.2,
         interactive:false}).addTo(map);
     })
     .catch(function(e){ console.warn('[contrast] Nigeria GeoJSON load failed', e); });
