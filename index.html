@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v19</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v20</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',system-ui,sans-serif;margin:0;padding:0;}
@@ -235,7 +235,8 @@ html,body{width:100%;height:100%;background:#0a0a0c;overflow:hidden;}
 .nh-lside.right .nh-stat{justify-content:flex-end;}
 .nh-stat .v{font-family:'Inter Tight',sans-serif;font-size:26px;font-weight:500;letter-spacing:-.02em;color:var(--nh-fg);}
 .nh-stat .l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--nh-fg-4);}
-#nh-globe-wrap{position:relative;aspect-ratio:1;width:100%;max-width:640px;justify-self:center;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;}
+#nh-globe-wrap{position:relative;aspect-ratio:1;width:100%;max-width:min(560px,52vh);justify-self:center;align-self:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
+.nh-lside{padding-bottom:48px;}
 #nh-globe{width:100%;aspect-ratio:1;position:relative;}
 #nh-globe > div{width:100%!important;height:100%!important;}
 #nh-enter{appearance:none;font-family:'Inter Tight',sans-serif;font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--nh-fg);background:linear-gradient(180deg,oklch(0.55 0.14 150 / .18),oklch(0.45 0.14 150 / .12));border:.5px solid oklch(0.7 0.14 150 / .5);border-radius:999px;padding:14px 28px 14px 30px;cursor:pointer;display:inline-flex;align-items:center;gap:14px;position:relative;transition:transform .2s,background .2s,border-color .2s,box-shadow .3s;box-shadow:0 0 0 0 oklch(0.7 0.14 150 / .3),0 10px 30px oklch(0.55 0.14 150 / .2);}
@@ -250,6 +251,81 @@ body.nh-entered #map-wrap{opacity:1;}
 body:not(.nh-entered) #map-wrap{pointer-events:none;}
 @media (max-width:1100px){#nh-lbody{grid-template-columns:1fr;}.nh-lside{display:none;}}
 @media (max-width:640px){#nh-lhead{padding:20px;}#nh-lhead .meta{display:none;}#nh-lfoot{padding:0 20px;font-size:9px;}#nh-globe-wrap{max-width:86vw;}}
+
+/* ===== v20 — Global design refresh (ported from prototype) ===== */
+*, .leaflet-container, .leaflet-popup-content-wrapper, .leaflet-popup-content{
+  font-family:'Inter Tight',-apple-system,BlinkMacSystemFont,system-ui,sans-serif!important;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+}
+.pcoord,.lyr-count,.ab-cat-n,.ps-l,.sc-label,.px-label,.px-risks li,.ab-sub,.ab-type,.pc,.src-note,
+.nh-badge,#nh-lhead .logo .name,#nh-lhead .meta,.nh-eyebrow,.nh-stat .l,.nh-cta-note,#nh-lfoot,#nh-clock{
+  font-family:'JetBrains Mono','SF Mono',ui-monospace,monospace!important;letter-spacing:.01em!important;
+}
+html,body{background:var(--nh-bg)!important;color:var(--nh-fg);}
+.panel,.glass{
+  background:oklch(0.205 0.008 240 / .94)!important;
+  border:.5px solid var(--nh-line)!important;
+  border-radius:12px!important;
+  box-shadow:0 1px 0 0 oklch(1 0 0 / .04) inset,0 24px 60px -24px oklch(0 0 0 / .55),0 8px 24px -12px oklch(0 0 0 / .4)!important;
+}
+#header{top:14px!important;left:14px!important;right:14px!important;}
+#header .hbar{padding:9px 14px 9px 16px!important;gap:14px!important;}
+#header .hbar .logo-area{gap:12px!important;}
+#header .hbar .logo-area img{height:20px!important;opacity:1!important;}
+#header .hbar .logo-area::after{content:'';width:1px;height:18px;background:var(--nh-line-2);margin-left:2px;}
+#header .hbar .htitle{font-size:13px!important;font-weight:500!important;color:var(--nh-fg)!important;letter-spacing:-.005em!important;}
+.nh-badge{background:oklch(0.55 0.14 150 / .14)!important;border:.5px solid oklch(0.55 0.14 150 / .35)!important;color:oklch(0.82 0.14 150)!important;font-weight:500!important;font-size:9px!important;padding:3px 8px!important;letter-spacing:.08em!important;}
+.nh-dot{background:var(--nh-green-2)!important;box-shadow:0 0 8px var(--nh-green-2);}
+.hsearch{
+  background:oklch(1 0 0 / .035)!important;border:.5px solid var(--nh-line)!important;border-radius:8px!important;
+  padding:8px 12px 8px 34px!important;font-size:13px!important;color:var(--nh-fg)!important;transition:border-color .15s,background .15s;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgb(180,180,190)' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>")!important;
+  background-repeat:no-repeat!important;background-position:12px center!important;
+}
+.hsearch::placeholder{color:var(--nh-fg-4)!important;}
+.hsearch:focus{border-color:var(--nh-green)!important;background:oklch(1 0 0 / .06)!important;box-shadow:0 0 0 3px oklch(0.55 0.14 150 / .1)!important;}
+.hbtn{border-radius:9px!important;border:.5px solid var(--nh-line)!important;background:oklch(1 0 0 / .03)!important;color:var(--nh-fg-2)!important;transition:all .15s;}
+.hbtn:hover{background:oklch(1 0 0 / .07)!important;color:var(--nh-fg)!important;}
+.hbtn-label{font-weight:500!important;font-size:12px!important;}
+.hbtn-label.active{background:oklch(0.55 0.14 150 / .12)!important;border-color:oklch(0.55 0.14 150 / .45)!important;color:oklch(0.88 0.14 150)!important;}
+.leaflet-control-zoom{margin-right:18px!important;margin-top:80px!important;}
+.leaflet-control-zoom a{background:oklch(0.205 0.008 240 / .94)!important;border:.5px solid var(--nh-line)!important;border-radius:9px!important;color:var(--nh-fg-2)!important;box-shadow:0 4px 14px oklch(0 0 0 / .3)!important;}
+.leaflet-control-zoom a:hover{background:oklch(0.235 0.008 240 / .96)!important;color:var(--nh-fg)!important;border-color:var(--nh-line-2)!important;}
+.leaflet-control-attribution{background:oklch(0 0 0 / .5)!important;color:oklch(1 0 0 / .25)!important;font-size:9px!important;}
+.leaflet-popup-content-wrapper{background:oklch(0.18 0.006 240 / .97)!important;border:.5px solid var(--nh-line-2)!important;border-radius:14px!important;box-shadow:0 1px 0 oklch(1 0 0 / .06) inset,0 30px 60px oklch(0 0 0 / .5),0 0 0 1px oklch(0 0 0 / .2)!important;}
+.leaflet-popup-content{margin:18px 20px 16px!important;width:310px!important;}
+.pc{font-size:10px!important;letter-spacing:.1em!important;opacity:.75!important;}
+.pt-name{font-size:17px!important;font-weight:600!important;letter-spacing:-.01em;line-height:1.25!important;}
+.pd{color:var(--nh-fg-3)!important;font-size:13px!important;}
+.ps-v{font-weight:600!important;letter-spacing:-.01em;}
+.ps-l{letter-spacing:.08em!important;}
+#sidebar{top:14px!important;right:14px!important;bottom:14px!important;width:296px!important;}
+#sidebar .sb-head{padding:14px 16px 12px!important;}
+#sidebar .sb-title{font-size:11px!important;font-weight:600!important;letter-spacing:.1em!important;text-transform:uppercase;color:var(--nh-fg-2)!important;font-family:'JetBrains Mono',monospace!important;}
+#sidebar .sb-body{padding:14px 16px!important;}
+.sb-label{font-size:9.5px!important;letter-spacing:.14em!important;color:var(--nh-fg-4)!important;margin-bottom:10px!important;}
+.sc-item{background:oklch(1 0 0 / .025)!important;border:.5px solid var(--nh-line)!important;border-radius:10px!important;padding:10px 12px!important;}
+.sc-label{font-size:9px!important;letter-spacing:.1em!important;text-transform:uppercase;color:var(--nh-fg-4)!important;margin-bottom:4px!important;}
+.sc-value{font-size:19px!important;font-weight:600!important;letter-spacing:-.02em!important;}
+.lyr-row{border:.5px solid var(--nh-line)!important;background:oklch(1 0 0 / .02)!important;border-radius:9px!important;padding:10px 11px!important;}
+.lyr-row:hover{background:oklch(1 0 0 / .05)!important;}
+.lyr-row.on{border-color:oklch(0.68 0.12 85 / .35)!important;background:oklch(0.68 0.12 85 / .06)!important;}
+.lyr-name{font-weight:500!important;color:var(--nh-fg)!important;}
+.lyr-row.off .lyr-name{color:var(--nh-fg-4)!important;}
+.lyr-dot{box-shadow:0 0 0 2.5px oklch(0.14 0.006 240)!important;}
+.lyr-count{font-size:10px!important;color:var(--nh-fg-4)!important;}
+.cpill{background:oklch(1 0 0 / .03)!important;border:.5px solid var(--nh-line)!important;color:var(--nh-fg-2)!important;border-radius:16px!important;font-size:11px!important;padding:5px 11px!important;}
+#ab{top:66px!important;}
+.ab-search{background:oklch(1 0 0 / .03)!important;border:.5px solid var(--nh-line)!important;border-radius:9px!important;}
+.ab-search:focus{border-color:var(--nh-green)!important;box-shadow:0 0 0 3px oklch(0.55 0.14 150 / .12)!important;}
+.ab-tab{border-radius:20px!important;background:oklch(1 0 0 / .025)!important;border:.5px solid var(--nh-line)!important;color:var(--nh-fg-3)!important;font-weight:500!important;}
+.ab-tab.on{background:oklch(0.55 0.14 150 / .14)!important;border-color:oklch(0.55 0.14 150 / .4)!important;color:oklch(0.9 0.14 150)!important;}
+/* Marker pulse refinement */
+.leaflet-marker-icon > div > div:first-child[style*="mPulse"]{animation-duration:4.5s!important;opacity:.22!important;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-thumb{background:oklch(1 0 0 / .08);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:oklch(1 0 0 / .15);}
+::selection{background:oklch(0.55 0.14 150 / .45);color:var(--nh-fg);}
 
 /* v18 — Nigeria vs neighbours contrast (satellite basemap) */
 .leaflet-pane.nh-dim-pane{ mix-blend-mode: multiply; pointer-events: none; }
