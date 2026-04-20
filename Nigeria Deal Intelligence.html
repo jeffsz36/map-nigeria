@@ -1,0 +1,68 @@
+# Prompt for Claude Code
+
+Copy-paste the block below into Claude Code after opening the `design_handoff_norhaven/` folder.
+
+---
+
+## Paste this into Claude Code
+
+I'm handing off a design prototype I want you to finish and ship.
+
+**Start by reading these files in order:**
+1. `design_handoff_norhaven/README.md` — full design spec, tokens, components, behaviour, and known open issues
+2. `design_handoff_norhaven/Nigeria Deal Intelligence.html` — the working prototype (single self-contained HTML file, ~1.2 MB). Open it in a browser to see the current state: landing page with 3D globe → click "Enter Network" → dark Leaflet map of Nigeria with mineral/energy/rail/port overlays.
+
+**Context:** this is a Norhaven (Abu Dhabi SWF) internal tool showing Nigeria's real-economy asset pipeline. Dark, minimalist, institutional aesthetic. Target user: sovereign wealth analysts.
+
+**Your tasks, in priority order:**
+
+### 1. Fix the Nigeria-vs-neighbours contrast (TOP PRIORITY — the previous agent got stuck here)
+
+The intent: on the main map, **Nigeria should look noticeably brighter and more saturated than its neighbouring countries** (Benin, Niger, Chad, Cameroon, Burkina Faso, Ghana, Togo), so it's immediately obvious the product is Nigeria-focused. Reference screenshot the user provided: satellite-style full-colour Nigeria vs. a heavy dark teal overlay over all surrounding countries. The user does NOT want to switch to a satellite basemap — they want the *effect* (strong inside/outside contrast) on the current dark Leaflet basemap.
+
+**Current implementation** (inside the `fetch(...).then(applyPolys)` block near the end of the big `<script>`):
+- Basemap: CARTO `dark_all` tiles, with CSS filter `brightness(1.75) saturate(0.95) contrast(1.08)` on `.leaflet-tile-pane`
+- Nigeria GeoJSON fetched at runtime from `world-geojson` / `johan/world.geo.json` fallback
+- Dim mask: `L.polygon(dimRings, {fillRule:'evenodd', fillColor:'#000', fillOpacity:.62})` — world rect minus Nigeria
+- A white "brighten Nigeria" overlay at `fillOpacity:.22` was added but is not strong enough
+
+**What to try** (any of these, whichever looks best):
+- Use a **second tile layer** clipped to Nigeria's shape via SVG mask, at higher brightness — so Nigeria tiles render brighter while the base `dark_all` shows through everywhere else.
+- Or use **CSS backdrop-filter** on a Nigeria-shaped SVG overlay (`backdrop-filter: brightness(1.8) saturate(1.4)`) so Nigeria tiles get extra treatment in-place.
+- Or swap the outside layer to a different, much darker tile style (Stadia `alidade_smooth_dark`) and leave Nigeria on `dark_all` — two basemaps composited by mask.
+- Keep the border polygon at `rgba(255,255,255,.18)` weight 1.2 as the crisp edge.
+
+Target: user should see *immediately* that Nigeria is the focus. Current state: too subtle.
+
+### 2. Verify all other fixes from the handoff still work
+
+- Landing page shows on load with 3D globe (globe.gl UMD bundle)
+- "Enter Network" button triggers scale+fade transition into the map
+- Clicking the Norhaven logo in the header returns to the landing page (landing element is kept in DOM, not removed)
+- All Leaflet overlays (minerals, oil & gas, rail, ports, portfolio corridor) render correctly
+- No console errors
+
+### 3. Port to production
+
+The HTML file is a prototype. The target stack for shipping is **[FILL IN — e.g. Next.js + react-leaflet + Tailwind]**. Recreate:
+- Landing component (globe + enter CTA + side copy + header/footer)
+- Map component (Leaflet wrapper, tile layer, all overlay groups, popups)
+- Sidebar + browser panel + header chrome
+- Keep the exact colour tokens, typography scale, and interaction timings documented in README.md
+
+Data in the current HTML is hard-coded inline as JS arrays/objects. Extract into JSON fixtures under `data/` for now; later they'll come from an API.
+
+### 4. Testing checklist before PR
+
+- [ ] Landing renders with globe animated
+- [ ] Enter button transitions to map
+- [ ] Logo click returns to landing
+- [ ] Nigeria is visibly brighter than all neighbours (the headline fix)
+- [ ] All 200+ asset markers render and open popups
+- [ ] Sidebar filters toggle layers correctly
+- [ ] No console errors, no unhandled promise rejections
+- [ ] Responsive down to 1280px wide (minimum supported)
+
+---
+
+**If anything in the README is ambiguous, ask before guessing.** The previous agent burned through many iterations on the contrast issue specifically — please read the "Known Open Issue" section of the README carefully and try a different approach than the polygon-opacity route.
