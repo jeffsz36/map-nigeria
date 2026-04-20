@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v25</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v26</title>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
 <link rel="preconnect" href="https://unpkg.com" crossorigin/>
@@ -335,13 +335,13 @@ html,body{background:var(--nh-bg)!important;color:var(--nh-fg);}
 ::-webkit-scrollbar-thumb:hover{background:oklch(1 0 0 / .15);}
 ::selection{background:oklch(0.55 0.14 150 / .45);color:var(--nh-fg);}
 
-/* v24 — Per-basemap tile filter + Nigeria contrast overlay */
-/* Dark: keep tiles ~native so neighbours stay near-black; brighten only Nigeria. */
-body.basemap-dark .leaflet-tile-pane{ filter: brightness(1.08) saturate(1.0) contrast(1.05); }
-body.basemap-sat  .leaflet-tile-pane{ filter: brightness(1.0)  saturate(1.0) contrast(1.0); }
+/* v26 — Per-basemap tile filter + Nigeria contrast overlay */
+body.basemap-dark .leaflet-tile-pane{ filter: brightness(1.0) saturate(1.0) contrast(1.0); }
+body.basemap-sat  .leaflet-tile-pane{ filter: brightness(1.0) saturate(1.0) contrast(1.0); }
 .leaflet-pane.nh-dim-pane{ mix-blend-mode: multiply; pointer-events: none; }
-.leaflet-pane.nh-bright-pane{ mix-blend-mode: screen; pointer-events: none; will-change: opacity; }
-.leaflet-pane.nh-brightboost-pane{ mix-blend-mode: overlay; pointer-events: none; will-change: opacity; }
+/* Nigeria fill uses NORMAL blending (not mix-blend) so it literally paints the country as a
+   light-grey shape. Opacity is toggled per basemap in JS: solid-ish on Dark, transparent on Satellite. */
+.leaflet-pane.nh-fill-pane{ pointer-events: none; }
 /* Layer switcher styled to match dark UI */
 .leaflet-control-layers{
   background:oklch(0.205 0.008 240 / .94)!important;
@@ -491,10 +491,16 @@ var satLayer  = L.layerGroup([satBase,  satLabel]);
 darkLayer.addTo(map);
 document.body.classList.add('basemap-dark');
 L.control.layers({'Dark':darkLayer,'Satellite':satLayer},null,{position:'topleft',collapsed:true}).addTo(map);
-map.on('baselayerchange', function(e){
-  document.body.classList.toggle('basemap-dark', e.name==='Dark');
-  document.body.classList.toggle('basemap-sat',  e.name==='Satellite');
-});
+function applyBasemapStyle(name){
+  document.body.classList.toggle('basemap-dark', name==='Dark');
+  document.body.classList.toggle('basemap-sat',  name==='Satellite');
+  if(window.__nhFill && window.__nhFill.setStyle){
+    // Dark: solid-ish light grey fill paints Nigeria distinct from the dark base.
+    // Satellite: near-transparent so the satellite imagery remains visible inside Nigeria.
+    window.__nhFill.setStyle({fillOpacity: name==='Dark' ? 0.80 : 0.05});
+  }
+}
+map.on('baselayerchange', function(e){ applyBasemapStyle(e.name); });
 
 /* ===== Nigeria vs neighbours contrast overlay =====
    Strategy: Nigeria stays full-colour satellite; everything outside is multiplied toward
@@ -509,9 +515,8 @@ map.on('baselayerchange', function(e){
     return p;
   }
   // Tile z-index is 200, overlay is 400 — place contrast panes between them.
-  mkPane('nhDim',         'nh-dim-pane',         395); // outside dim via multiply
-  mkPane('nhBright',      'nh-bright-pane',      396); // Nigeria: screen brighten
-  mkPane('nhBrightBoost', 'nh-brightboost-pane', 397); // Nigeria: overlay boost contrast
+  mkPane('nhDim',  'nh-dim-pane',  395); // outside dim via multiply
+  mkPane('nhFill', 'nh-fill-pane', 396); // Nigeria: solid light-grey fill (dark mode only)
 
   fetch('https://cdn.jsdelivr.net/npm/world-geojson@0.0.5/countries/nigeria.json')
     .catch(function(){ return fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/NGA.geo.json'); })
@@ -532,21 +537,19 @@ map.on('baselayerchange', function(e){
         nigeriaRings.push(latlng);
       }); });
 
-      // Outside dim via multiply — dark grey-blue at high opacity: neighbours go nearly black.
-      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#020814', fillOpacity:.92,
+      // Outside dim via multiply — moderate darken, neighbours stay readable (not near-black).
+      L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#0c1422', fillOpacity:.55,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
-      // Inside brighten via screen — warm off-white lifts Nigeria substantially.
-      L.polygon(nigeriaRings, {pane:'nhBright', fillColor:'#fff4d2', fillOpacity:.55,
+      // Nigeria SOLID light-grey fill. This literally paints Nigeria a distinct lighter colour
+      // (like a subway map highlighting the focal country). Stored so the basemap switcher can
+      // update its opacity: opaque-ish on Dark, near-transparent on Satellite.
+      window.__nhFill = L.polygon(nigeriaRings, {pane:'nhFill', fillColor:'#a8b3c2', fillOpacity:.80,
         color:'transparent', weight:0, interactive:false}).addTo(map);
 
-      // Inside overlay boost — overlay blend further increases Nigeria mid-tones & contrast.
-      L.polygon(nigeriaRings, {pane:'nhBrightBoost', fillColor:'#ffe7a0', fillOpacity:.55,
-        color:'transparent', weight:0, interactive:false}).addTo(map);
-
-      // Crisp white border
+      // Crisp white border above the fill.
       var borderRings = polys.map(function(p){ return p[0].map(function(c){return [c[1],c[0]];}); });
-      L.polygon(borderRings, {fill:false, color:'rgba(255,255,255,.55)', weight:1.6,
+      L.polygon(borderRings, {pane:'nhFill', fill:false, color:'rgba(255,255,255,.6)', weight:1.6,
         interactive:false}).addTo(map);
     })
     .catch(function(e){ console.warn('[contrast] Nigeria GeoJSON load failed', e); });
