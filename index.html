@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nigeria Asset Intelligence &mdash; SWF Edition v31</title>
+<title>Nigeria Asset Intelligence &mdash; SWF Edition v32</title>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
 <link rel="preconnect" href="https://unpkg.com" crossorigin/>
@@ -335,11 +335,12 @@ html,body{background:var(--nh-bg)!important;color:var(--nh-fg);}
 ::-webkit-scrollbar-thumb:hover{background:oklch(1 0 0 / .15);}
 ::selection{background:oklch(0.55 0.14 150 / .45);color:var(--nh-fg);}
 
-/* v28 — Nigeria contrast overlay. No mix-blend modes, no filters — just plain polygons.
-   nhDim paints a semi-transparent dark rectangle over everything except Nigeria (fillRule evenodd
-   with world ring + Nigeria holes). nhFill paints a solid light grey polygon inside Nigeria. */
-.leaflet-pane.nh-dim-pane,
-.leaflet-pane.nh-fill-pane{ pointer-events: none; }
+/* v32 — Nigeria contrast: brighten entire tileset, then dim OUTSIDE Nigeria.
+   No polygon on TOP of Nigeria — labels/roads/detail stay fully visible.
+   The brightness filter lifts everything; the dim polygon selectively reduces outside. */
+body.basemap-dark .leaflet-tile-pane{ filter: brightness(1.7) saturate(1.0) contrast(1.08); }
+body.basemap-sat  .leaflet-tile-pane{ filter: brightness(1.0) saturate(1.0) contrast(1.0); }
+.leaflet-pane.nh-dim-pane{ pointer-events: none; }
 /* Layer switcher styled to match dark UI */
 .leaflet-control-layers{
   background:oklch(0.205 0.008 240 / .94)!important;
@@ -492,10 +493,10 @@ L.control.layers({'Dark':darkLayer,'Satellite':satLayer},null,{position:'topleft
 function applyBasemapStyle(name){
   document.body.classList.toggle('basemap-dark', name==='Dark');
   document.body.classList.toggle('basemap-sat',  name==='Satellite');
-  if(window.__nhFill && window.__nhFill.setStyle){
-    // Dark: solid-ish light grey fill paints Nigeria distinct from the dark base.
-    // Satellite: near-transparent so the satellite imagery remains visible inside Nigeria.
-    window.__nhFill.setStyle({fillOpacity: name==='Dark' ? 0.92 : 0.05});
+  // Adjust dim intensity per basemap — dark tiles need a lighter dim (tiles are already brightened);
+  // satellite tiles need a heavier dim to darken the outside.
+  if(window.__nhDim && window.__nhDim.setStyle){
+    window.__nhDim.setStyle({fillOpacity: name==='Dark' ? 0.45 : 0.55});
   }
 }
 map.on('baselayerchange', function(e){ applyBasemapStyle(e.name); });
@@ -513,8 +514,7 @@ map.on('baselayerchange', function(e){ applyBasemapStyle(e.name); });
     return p;
   }
   // Tile z-index is 200, overlay is 400 — place contrast panes between them.
-  mkPane('nhDim',  'nh-dim-pane',  395);
-  mkPane('nhFill', 'nh-fill-pane', 396);
+  mkPane('nhDim', 'nh-dim-pane', 395);
 
   // INLINE Nigeria polygon (authoritative 58-pt outline from johan/world.geo.json, [lat,lng])
   var nigeriaRing = [[4.7720,8.5003],[4.4121,7.4621],[4.4647,7.0826],[4.2406,6.6981],[4.2625,5.8982],[4.8880,5.3628],[5.6118,5.0336],[6.2707,4.3256],[6.2583,3.5742],[6.2588,2.6917],[7.8707,2.7491],[8.5068,2.7238],[9.1376,2.9123],[9.4442,3.2204],[10.0632,3.7054],[10.3322,3.6001],[10.7347,3.7971],[11.3279,3.5722],[11.6602,3.6112],[12.5529,3.6806],[12.9561,3.9673],[13.5312,4.1079],[13.7475,4.3683],[13.8659,5.4431],[13.4928,6.4454],[13.1151,6.8204],[13.0980,7.3307],[13.3435,7.8047],[12.8267,9.0149],[12.8511,9.5249],[13.2773,10.1148],[13.2469,10.7010],[13.3873,10.9896],[13.3290,11.5278],[13.0372,12.3021],[13.5961,13.0840],[13.5564,13.3187],[12.4616,13.9954],[12.4837,14.1813],[12.0854,14.5772],[11.9048,14.4682],[11.5724,14.4154],[10.7986,13.5730],[10.1604,13.3087],[9.6406,13.1676],[9.4178,12.9555],[8.7178,12.7537],[8.3058,12.2189],[7.7998,12.0639],[7.3970,11.8393],[6.9814,11.7458],[6.6444,11.0588],[7.0554,10.4974],[7.0388,10.1183],[6.4535,9.5227],[6.4445,9.2332],[5.4797,8.7575],[4.7720,8.5003]];
@@ -522,18 +522,19 @@ map.on('baselayerchange', function(e){ applyBasemapStyle(e.name); });
   var worldRing = [[-89.9,-179.9],[89.9,-179.9],[89.9,179.9],[-89.9,179.9]];
   var dimRings = [worldRing, nigeriaRing];
 
-  // Outside dim — plain dark polygon.
-  L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#050912', fillOpacity:.55,
+  // Outside dim — semi-transparent dark polygon covers everything EXCEPT Nigeria
+  // (fillRule evenodd with world ring + Nigeria hole). On the brightened tile base,
+  // this reduces outside luminance while Nigeria stays at full brightness.
+  window.__nhDim = L.polygon(dimRings, {pane:'nhDim', fillRule:'evenodd', fillColor:'#0a1220', fillOpacity:.45,
     color:'transparent', weight:0, interactive:false}).addTo(map);
 
-  // Nigeria SOLID light-grey fill.
-  window.__nhFill = L.polygon([nigeriaRing], {pane:'nhFill', fillColor:'#c6d0dc', fillOpacity:.92,
-    color:'transparent', weight:0, interactive:false}).addTo(map);
+  // NO fill polygon on Nigeria — labels, roads, and detail stay fully visible.
+  // Nigeria contrast comes from: bright base tiles (CSS filter) minus dim overlay (outside only).
 
-  // White border
-  L.polygon([nigeriaRing], {pane:'nhFill', fill:false, color:'rgba(255,255,255,.85)', weight:2,
+  // Crisp border around Nigeria
+  L.polygon([nigeriaRing], {fill:false, color:'rgba(255,255,255,.5)', weight:1.5,
     interactive:false}).addTo(map);
-  console.log('[contrast] inline Nigeria polygon added');
+  console.log('[contrast] inline Nigeria dim+border added');
 })();
 
 // OIL & GAS PORTS
